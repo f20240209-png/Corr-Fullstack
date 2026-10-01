@@ -41,7 +41,7 @@ Prices are purchase costs in INR, not estimated monthly usage. Do not infer alle
   let lastError;
   for (let attempt = 0; attempt < 2; attempt++) {
     const completion = await getGroq().chat.completions.create({
-      model: process.env.GROQ_MODEL || 'llama-3.3-70b-versatile', temperature: 0.2, max_tokens: 5000,
+      model: (process.env.GROQ_MODEL || '').trim() || 'openai/gpt-oss-120b', temperature: 0.2, max_tokens: 5000,
       response_format: { type: 'json_object' },
       messages: [{ role: 'system', content: system }, { role: 'user', content: JSON.stringify(context) },
         ...(attempt ? [{ role: 'user', content: `Your previous output failed validation: ${lastError.message}. Return corrected complete JSON.` }] : [])],

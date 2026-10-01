@@ -1,0 +1,11 @@
+const router = require('express').Router();
+const { protect } = require('../middleware/authMiddleware');
+const upload = require('../middleware/discoveryUpload');
+const controller = require('../controllers/discoveryController');
+router.use(protect);
+router.get('/', controller.listDiscoveries);
+router.post('/', upload, controller.createDiscovery);
+router.get('/:id/photo', controller.getDiscoveryPhoto);
+router.put('/:id', upload, controller.updateDiscovery);
+router.delete('/:id', controller.deleteDiscovery);
+module.exports = router;

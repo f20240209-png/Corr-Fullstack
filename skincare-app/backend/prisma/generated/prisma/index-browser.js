@@ -231,6 +231,27 @@ exports.Prisma.FriendRequestScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.ProductDiscoveryScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  productName: 'productName',
+  brand: 'brand',
+  productKey: 'productKey',
+  imageHash: 'imageHash',
+  review: 'review',
+  rating: 'rating',
+  discoveredOn: 'discoveredOn',
+  version: 'version',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ProductDiscoveryImageScalarFieldEnum = {
+  discoveryId: 'discoveryId',
+  bytes: 'bytes',
+  thumbnail: 'thumbnail'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -308,6 +329,15 @@ exports.Prisma.FriendRequestOrderByRelevanceFieldEnum = {
   status: 'status'
 };
 
+exports.Prisma.ProductDiscoveryOrderByRelevanceFieldEnum = {
+  productName: 'productName',
+  brand: 'brand',
+  productKey: 'productKey',
+  imageHash: 'imageHash',
+  review: 'review',
+  discoveredOn: 'discoveredOn'
+};
+
 
 exports.Prisma.ModelName = {
   User: 'User',
@@ -318,7 +348,9 @@ exports.Prisma.ModelName = {
   Ingredient_Conflict: 'Ingredient_Conflict',
   CommunityPost: 'CommunityPost',
   CommunityAnswer: 'CommunityAnswer',
-  FriendRequest: 'FriendRequest'
+  FriendRequest: 'FriendRequest',
+  ProductDiscovery: 'ProductDiscovery',
+  ProductDiscoveryImage: 'ProductDiscoveryImage'
 };
 
 /**

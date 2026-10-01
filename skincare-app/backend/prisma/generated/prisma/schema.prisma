@@ -10,22 +10,23 @@ datasource db {
 }
 
 model User {
-  id                Int               @id @default(autoincrement())
+  id                Int                @id @default(autoincrement())
   name              String?
-  email             String?           @unique
+  email             String?            @unique
   password          String?
-  googleId          String?           @unique
-  phoneNumber       String?           @unique
-  isNewUser         Boolean           @default(true)
-  username          String?           @unique //
+  googleId          String?            @unique
+  phoneNumber       String?            @unique
+  isNewUser         Boolean            @default(true)
+  username          String?            @unique //
   usernameChangedAt DateTime? //  (null = never changed)
-  createdAt         DateTime          @default(now())
+  createdAt         DateTime           @default(now())
+  discoveries       ProductDiscovery[]
   profile           Profile?
   skincareLogs      SkincareLog[]
   communityPosts    CommunityPost[]
   communityAnswers  CommunityAnswer[]
-  sentRequests      FriendRequest[]   @relation("SentRequests") // 
-  receivedRequests  FriendRequest[]   @relation("ReceivedRequests") // 
+  sentRequests      FriendRequest[]    @relation("SentRequests") // 
+  receivedRequests  FriendRequest[]    @relation("ReceivedRequests") // 
 }
 
 model Profile {
@@ -35,10 +36,10 @@ model Profile {
   age             Int
   gender          String
   skinType        String
-  skinGoals       String
+  skinGoals       String          @db.Text
   budget          Float
-  currentProducts String?
-  currentRoutine  String?
+  currentProducts String?         @db.Text
+  currentRoutine  String?         @db.Text
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
   recommendation  Recommendation?
@@ -138,4 +139,32 @@ model FriendRequest {
   receiver User @relation("ReceivedRequests", fields: [receiverId], references: [id])
 
   @@unique([senderId, receiverId])
+}
+
+model ProductDiscovery {
+  id           Int                    @id @default(autoincrement())
+  userId       Int
+  user         User                   @relation(fields: [userId], references: [id])
+  productName  String                 @db.VarChar(120)
+  brand        String                 @db.VarChar(80)
+  productKey   String                 @db.Char(64)
+  imageHash    String                 @db.Char(64)
+  review       String                 @db.Text
+  rating       Int?
+  discoveredOn String                 @db.Char(10)
+  version      Int                    @default(1)
+  createdAt    DateTime               @default(now())
+  updatedAt    DateTime               @updatedAt
+  image        ProductDiscoveryImage?
+
+  @@unique([userId, productKey])
+  @@unique([userId, imageHash])
+  @@index([userId, id])
+}
+
+model ProductDiscoveryImage {
+  discoveryId Int              @id
+  discovery   ProductDiscovery @relation(fields: [discoveryId], references: [id], onDelete: Cascade)
+  bytes       Bytes            @db.MediumBlob
+  thumbnail   Bytes            @db.MediumBlob
 }

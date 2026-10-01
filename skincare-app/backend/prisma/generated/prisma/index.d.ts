@@ -58,6 +58,16 @@ export type CommunityAnswer = $Result.DefaultSelection<Prisma.$CommunityAnswerPa
  * 
  */
 export type FriendRequest = $Result.DefaultSelection<Prisma.$FriendRequestPayload>
+/**
+ * Model ProductDiscovery
+ * 
+ */
+export type ProductDiscovery = $Result.DefaultSelection<Prisma.$ProductDiscoveryPayload>
+/**
+ * Model ProductDiscoveryImage
+ * 
+ */
+export type ProductDiscoveryImage = $Result.DefaultSelection<Prisma.$ProductDiscoveryImagePayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -266,6 +276,26 @@ export class PrismaClient<
     * ```
     */
   get friendRequest(): Prisma.FriendRequestDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.productDiscovery`: Exposes CRUD operations for the **ProductDiscovery** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ProductDiscoveries
+    * const productDiscoveries = await prisma.productDiscovery.findMany()
+    * ```
+    */
+  get productDiscovery(): Prisma.ProductDiscoveryDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.productDiscoveryImage`: Exposes CRUD operations for the **ProductDiscoveryImage** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ProductDiscoveryImages
+    * const productDiscoveryImages = await prisma.productDiscoveryImage.findMany()
+    * ```
+    */
+  get productDiscoveryImage(): Prisma.ProductDiscoveryImageDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -715,7 +745,9 @@ export namespace Prisma {
     Ingredient_Conflict: 'Ingredient_Conflict',
     CommunityPost: 'CommunityPost',
     CommunityAnswer: 'CommunityAnswer',
-    FriendRequest: 'FriendRequest'
+    FriendRequest: 'FriendRequest',
+    ProductDiscovery: 'ProductDiscovery',
+    ProductDiscoveryImage: 'ProductDiscoveryImage'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -734,7 +766,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "profile" | "recommendation" | "product" | "skincareLog" | "ingredient_Conflict" | "communityPost" | "communityAnswer" | "friendRequest"
+      modelProps: "user" | "profile" | "recommendation" | "product" | "skincareLog" | "ingredient_Conflict" | "communityPost" | "communityAnswer" | "friendRequest" | "productDiscovery" | "productDiscoveryImage"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1332,6 +1364,138 @@ export namespace Prisma {
           }
         }
       }
+      ProductDiscovery: {
+        payload: Prisma.$ProductDiscoveryPayload<ExtArgs>
+        fields: Prisma.ProductDiscoveryFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ProductDiscoveryFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductDiscoveryPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ProductDiscoveryFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductDiscoveryPayload>
+          }
+          findFirst: {
+            args: Prisma.ProductDiscoveryFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductDiscoveryPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ProductDiscoveryFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductDiscoveryPayload>
+          }
+          findMany: {
+            args: Prisma.ProductDiscoveryFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductDiscoveryPayload>[]
+          }
+          create: {
+            args: Prisma.ProductDiscoveryCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductDiscoveryPayload>
+          }
+          createMany: {
+            args: Prisma.ProductDiscoveryCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.ProductDiscoveryDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductDiscoveryPayload>
+          }
+          update: {
+            args: Prisma.ProductDiscoveryUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductDiscoveryPayload>
+          }
+          deleteMany: {
+            args: Prisma.ProductDiscoveryDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ProductDiscoveryUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.ProductDiscoveryUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductDiscoveryPayload>
+          }
+          aggregate: {
+            args: Prisma.ProductDiscoveryAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateProductDiscovery>
+          }
+          groupBy: {
+            args: Prisma.ProductDiscoveryGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ProductDiscoveryGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ProductDiscoveryCountArgs<ExtArgs>
+            result: $Utils.Optional<ProductDiscoveryCountAggregateOutputType> | number
+          }
+        }
+      }
+      ProductDiscoveryImage: {
+        payload: Prisma.$ProductDiscoveryImagePayload<ExtArgs>
+        fields: Prisma.ProductDiscoveryImageFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ProductDiscoveryImageFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductDiscoveryImagePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ProductDiscoveryImageFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductDiscoveryImagePayload>
+          }
+          findFirst: {
+            args: Prisma.ProductDiscoveryImageFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductDiscoveryImagePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ProductDiscoveryImageFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductDiscoveryImagePayload>
+          }
+          findMany: {
+            args: Prisma.ProductDiscoveryImageFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductDiscoveryImagePayload>[]
+          }
+          create: {
+            args: Prisma.ProductDiscoveryImageCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductDiscoveryImagePayload>
+          }
+          createMany: {
+            args: Prisma.ProductDiscoveryImageCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.ProductDiscoveryImageDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductDiscoveryImagePayload>
+          }
+          update: {
+            args: Prisma.ProductDiscoveryImageUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductDiscoveryImagePayload>
+          }
+          deleteMany: {
+            args: Prisma.ProductDiscoveryImageDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ProductDiscoveryImageUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.ProductDiscoveryImageUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductDiscoveryImagePayload>
+          }
+          aggregate: {
+            args: Prisma.ProductDiscoveryImageAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateProductDiscoveryImage>
+          }
+          groupBy: {
+            args: Prisma.ProductDiscoveryImageGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ProductDiscoveryImageGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ProductDiscoveryImageCountArgs<ExtArgs>
+            result: $Utils.Optional<ProductDiscoveryImageCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1437,6 +1601,8 @@ export namespace Prisma {
     communityPost?: CommunityPostOmit
     communityAnswer?: CommunityAnswerOmit
     friendRequest?: FriendRequestOmit
+    productDiscovery?: ProductDiscoveryOmit
+    productDiscoveryImage?: ProductDiscoveryImageOmit
   }
 
   /* Types for Logging */
@@ -1517,6 +1683,7 @@ export namespace Prisma {
    */
 
   export type UserCountOutputType = {
+    discoveries: number
     skincareLogs: number
     communityPosts: number
     communityAnswers: number
@@ -1525,6 +1692,7 @@ export namespace Prisma {
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    discoveries?: boolean | UserCountOutputTypeCountDiscoveriesArgs
     skincareLogs?: boolean | UserCountOutputTypeCountSkincareLogsArgs
     communityPosts?: boolean | UserCountOutputTypeCountCommunityPostsArgs
     communityAnswers?: boolean | UserCountOutputTypeCountCommunityAnswersArgs
@@ -1541,6 +1709,13 @@ export namespace Prisma {
      * Select specific fields to fetch from the UserCountOutputType
      */
     select?: UserCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountDiscoveriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ProductDiscoveryWhereInput
   }
 
   /**
@@ -1852,6 +2027,7 @@ export namespace Prisma {
     username?: boolean
     usernameChangedAt?: boolean
     createdAt?: boolean
+    discoveries?: boolean | User$discoveriesArgs<ExtArgs>
     profile?: boolean | User$profileArgs<ExtArgs>
     skincareLogs?: boolean | User$skincareLogsArgs<ExtArgs>
     communityPosts?: boolean | User$communityPostsArgs<ExtArgs>
@@ -1878,6 +2054,7 @@ export namespace Prisma {
 
   export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "password" | "googleId" | "phoneNumber" | "isNewUser" | "username" | "usernameChangedAt" | "createdAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    discoveries?: boolean | User$discoveriesArgs<ExtArgs>
     profile?: boolean | User$profileArgs<ExtArgs>
     skincareLogs?: boolean | User$skincareLogsArgs<ExtArgs>
     communityPosts?: boolean | User$communityPostsArgs<ExtArgs>
@@ -1890,6 +2067,7 @@ export namespace Prisma {
   export type $UserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "User"
     objects: {
+      discoveries: Prisma.$ProductDiscoveryPayload<ExtArgs>[]
       profile: Prisma.$ProfilePayload<ExtArgs> | null
       skincareLogs: Prisma.$SkincareLogPayload<ExtArgs>[]
       communityPosts: Prisma.$CommunityPostPayload<ExtArgs>[]
@@ -2248,6 +2426,7 @@ export namespace Prisma {
    */
   export interface Prisma__UserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    discoveries<T extends User$discoveriesArgs<ExtArgs> = {}>(args?: Subset<T, User$discoveriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductDiscoveryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     profile<T extends User$profileArgs<ExtArgs> = {}>(args?: Subset<T, User$profileArgs<ExtArgs>>): Prisma__ProfileClient<$Result.GetResult<Prisma.$ProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     skincareLogs<T extends User$skincareLogsArgs<ExtArgs> = {}>(args?: Subset<T, User$skincareLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SkincareLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     communityPosts<T extends User$communityPostsArgs<ExtArgs> = {}>(args?: Subset<T, User$communityPostsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CommunityPostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -2633,6 +2812,30 @@ export namespace Prisma {
      * Limit how many Users to delete.
      */
     limit?: number
+  }
+
+  /**
+   * User.discoveries
+   */
+  export type User$discoveriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductDiscovery
+     */
+    select?: ProductDiscoverySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductDiscovery
+     */
+    omit?: ProductDiscoveryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductDiscoveryInclude<ExtArgs> | null
+    where?: ProductDiscoveryWhereInput
+    orderBy?: ProductDiscoveryOrderByWithRelationInput | ProductDiscoveryOrderByWithRelationInput[]
+    cursor?: ProductDiscoveryWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ProductDiscoveryScalarFieldEnum | ProductDiscoveryScalarFieldEnum[]
   }
 
   /**
@@ -10892,6 +11095,2022 @@ export namespace Prisma {
 
 
   /**
+   * Model ProductDiscovery
+   */
+
+  export type AggregateProductDiscovery = {
+    _count: ProductDiscoveryCountAggregateOutputType | null
+    _avg: ProductDiscoveryAvgAggregateOutputType | null
+    _sum: ProductDiscoverySumAggregateOutputType | null
+    _min: ProductDiscoveryMinAggregateOutputType | null
+    _max: ProductDiscoveryMaxAggregateOutputType | null
+  }
+
+  export type ProductDiscoveryAvgAggregateOutputType = {
+    id: number | null
+    userId: number | null
+    rating: number | null
+    version: number | null
+  }
+
+  export type ProductDiscoverySumAggregateOutputType = {
+    id: number | null
+    userId: number | null
+    rating: number | null
+    version: number | null
+  }
+
+  export type ProductDiscoveryMinAggregateOutputType = {
+    id: number | null
+    userId: number | null
+    productName: string | null
+    brand: string | null
+    productKey: string | null
+    imageHash: string | null
+    review: string | null
+    rating: number | null
+    discoveredOn: string | null
+    version: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ProductDiscoveryMaxAggregateOutputType = {
+    id: number | null
+    userId: number | null
+    productName: string | null
+    brand: string | null
+    productKey: string | null
+    imageHash: string | null
+    review: string | null
+    rating: number | null
+    discoveredOn: string | null
+    version: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ProductDiscoveryCountAggregateOutputType = {
+    id: number
+    userId: number
+    productName: number
+    brand: number
+    productKey: number
+    imageHash: number
+    review: number
+    rating: number
+    discoveredOn: number
+    version: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ProductDiscoveryAvgAggregateInputType = {
+    id?: true
+    userId?: true
+    rating?: true
+    version?: true
+  }
+
+  export type ProductDiscoverySumAggregateInputType = {
+    id?: true
+    userId?: true
+    rating?: true
+    version?: true
+  }
+
+  export type ProductDiscoveryMinAggregateInputType = {
+    id?: true
+    userId?: true
+    productName?: true
+    brand?: true
+    productKey?: true
+    imageHash?: true
+    review?: true
+    rating?: true
+    discoveredOn?: true
+    version?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ProductDiscoveryMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    productName?: true
+    brand?: true
+    productKey?: true
+    imageHash?: true
+    review?: true
+    rating?: true
+    discoveredOn?: true
+    version?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ProductDiscoveryCountAggregateInputType = {
+    id?: true
+    userId?: true
+    productName?: true
+    brand?: true
+    productKey?: true
+    imageHash?: true
+    review?: true
+    rating?: true
+    discoveredOn?: true
+    version?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ProductDiscoveryAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ProductDiscovery to aggregate.
+     */
+    where?: ProductDiscoveryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProductDiscoveries to fetch.
+     */
+    orderBy?: ProductDiscoveryOrderByWithRelationInput | ProductDiscoveryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ProductDiscoveryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProductDiscoveries from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProductDiscoveries.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ProductDiscoveries
+    **/
+    _count?: true | ProductDiscoveryCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ProductDiscoveryAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ProductDiscoverySumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ProductDiscoveryMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ProductDiscoveryMaxAggregateInputType
+  }
+
+  export type GetProductDiscoveryAggregateType<T extends ProductDiscoveryAggregateArgs> = {
+        [P in keyof T & keyof AggregateProductDiscovery]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateProductDiscovery[P]>
+      : GetScalarType<T[P], AggregateProductDiscovery[P]>
+  }
+
+
+
+
+  export type ProductDiscoveryGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ProductDiscoveryWhereInput
+    orderBy?: ProductDiscoveryOrderByWithAggregationInput | ProductDiscoveryOrderByWithAggregationInput[]
+    by: ProductDiscoveryScalarFieldEnum[] | ProductDiscoveryScalarFieldEnum
+    having?: ProductDiscoveryScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ProductDiscoveryCountAggregateInputType | true
+    _avg?: ProductDiscoveryAvgAggregateInputType
+    _sum?: ProductDiscoverySumAggregateInputType
+    _min?: ProductDiscoveryMinAggregateInputType
+    _max?: ProductDiscoveryMaxAggregateInputType
+  }
+
+  export type ProductDiscoveryGroupByOutputType = {
+    id: number
+    userId: number
+    productName: string
+    brand: string
+    productKey: string
+    imageHash: string
+    review: string
+    rating: number | null
+    discoveredOn: string
+    version: number
+    createdAt: Date
+    updatedAt: Date
+    _count: ProductDiscoveryCountAggregateOutputType | null
+    _avg: ProductDiscoveryAvgAggregateOutputType | null
+    _sum: ProductDiscoverySumAggregateOutputType | null
+    _min: ProductDiscoveryMinAggregateOutputType | null
+    _max: ProductDiscoveryMaxAggregateOutputType | null
+  }
+
+  type GetProductDiscoveryGroupByPayload<T extends ProductDiscoveryGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ProductDiscoveryGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ProductDiscoveryGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ProductDiscoveryGroupByOutputType[P]>
+            : GetScalarType<T[P], ProductDiscoveryGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ProductDiscoverySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    productName?: boolean
+    brand?: boolean
+    productKey?: boolean
+    imageHash?: boolean
+    review?: boolean
+    rating?: boolean
+    discoveredOn?: boolean
+    version?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    image?: boolean | ProductDiscovery$imageArgs<ExtArgs>
+  }, ExtArgs["result"]["productDiscovery"]>
+
+
+
+  export type ProductDiscoverySelectScalar = {
+    id?: boolean
+    userId?: boolean
+    productName?: boolean
+    brand?: boolean
+    productKey?: boolean
+    imageHash?: boolean
+    review?: boolean
+    rating?: boolean
+    discoveredOn?: boolean
+    version?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ProductDiscoveryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "productName" | "brand" | "productKey" | "imageHash" | "review" | "rating" | "discoveredOn" | "version" | "createdAt" | "updatedAt", ExtArgs["result"]["productDiscovery"]>
+  export type ProductDiscoveryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    image?: boolean | ProductDiscovery$imageArgs<ExtArgs>
+  }
+
+  export type $ProductDiscoveryPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ProductDiscovery"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+      image: Prisma.$ProductDiscoveryImagePayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      userId: number
+      productName: string
+      brand: string
+      productKey: string
+      imageHash: string
+      review: string
+      rating: number | null
+      discoveredOn: string
+      version: number
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["productDiscovery"]>
+    composites: {}
+  }
+
+  type ProductDiscoveryGetPayload<S extends boolean | null | undefined | ProductDiscoveryDefaultArgs> = $Result.GetResult<Prisma.$ProductDiscoveryPayload, S>
+
+  type ProductDiscoveryCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ProductDiscoveryFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ProductDiscoveryCountAggregateInputType | true
+    }
+
+  export interface ProductDiscoveryDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ProductDiscovery'], meta: { name: 'ProductDiscovery' } }
+    /**
+     * Find zero or one ProductDiscovery that matches the filter.
+     * @param {ProductDiscoveryFindUniqueArgs} args - Arguments to find a ProductDiscovery
+     * @example
+     * // Get one ProductDiscovery
+     * const productDiscovery = await prisma.productDiscovery.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ProductDiscoveryFindUniqueArgs>(args: SelectSubset<T, ProductDiscoveryFindUniqueArgs<ExtArgs>>): Prisma__ProductDiscoveryClient<$Result.GetResult<Prisma.$ProductDiscoveryPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ProductDiscovery that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ProductDiscoveryFindUniqueOrThrowArgs} args - Arguments to find a ProductDiscovery
+     * @example
+     * // Get one ProductDiscovery
+     * const productDiscovery = await prisma.productDiscovery.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ProductDiscoveryFindUniqueOrThrowArgs>(args: SelectSubset<T, ProductDiscoveryFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ProductDiscoveryClient<$Result.GetResult<Prisma.$ProductDiscoveryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ProductDiscovery that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProductDiscoveryFindFirstArgs} args - Arguments to find a ProductDiscovery
+     * @example
+     * // Get one ProductDiscovery
+     * const productDiscovery = await prisma.productDiscovery.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ProductDiscoveryFindFirstArgs>(args?: SelectSubset<T, ProductDiscoveryFindFirstArgs<ExtArgs>>): Prisma__ProductDiscoveryClient<$Result.GetResult<Prisma.$ProductDiscoveryPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ProductDiscovery that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProductDiscoveryFindFirstOrThrowArgs} args - Arguments to find a ProductDiscovery
+     * @example
+     * // Get one ProductDiscovery
+     * const productDiscovery = await prisma.productDiscovery.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ProductDiscoveryFindFirstOrThrowArgs>(args?: SelectSubset<T, ProductDiscoveryFindFirstOrThrowArgs<ExtArgs>>): Prisma__ProductDiscoveryClient<$Result.GetResult<Prisma.$ProductDiscoveryPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ProductDiscoveries that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProductDiscoveryFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ProductDiscoveries
+     * const productDiscoveries = await prisma.productDiscovery.findMany()
+     * 
+     * // Get first 10 ProductDiscoveries
+     * const productDiscoveries = await prisma.productDiscovery.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const productDiscoveryWithIdOnly = await prisma.productDiscovery.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ProductDiscoveryFindManyArgs>(args?: SelectSubset<T, ProductDiscoveryFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductDiscoveryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ProductDiscovery.
+     * @param {ProductDiscoveryCreateArgs} args - Arguments to create a ProductDiscovery.
+     * @example
+     * // Create one ProductDiscovery
+     * const ProductDiscovery = await prisma.productDiscovery.create({
+     *   data: {
+     *     // ... data to create a ProductDiscovery
+     *   }
+     * })
+     * 
+     */
+    create<T extends ProductDiscoveryCreateArgs>(args: SelectSubset<T, ProductDiscoveryCreateArgs<ExtArgs>>): Prisma__ProductDiscoveryClient<$Result.GetResult<Prisma.$ProductDiscoveryPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ProductDiscoveries.
+     * @param {ProductDiscoveryCreateManyArgs} args - Arguments to create many ProductDiscoveries.
+     * @example
+     * // Create many ProductDiscoveries
+     * const productDiscovery = await prisma.productDiscovery.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ProductDiscoveryCreateManyArgs>(args?: SelectSubset<T, ProductDiscoveryCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a ProductDiscovery.
+     * @param {ProductDiscoveryDeleteArgs} args - Arguments to delete one ProductDiscovery.
+     * @example
+     * // Delete one ProductDiscovery
+     * const ProductDiscovery = await prisma.productDiscovery.delete({
+     *   where: {
+     *     // ... filter to delete one ProductDiscovery
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ProductDiscoveryDeleteArgs>(args: SelectSubset<T, ProductDiscoveryDeleteArgs<ExtArgs>>): Prisma__ProductDiscoveryClient<$Result.GetResult<Prisma.$ProductDiscoveryPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ProductDiscovery.
+     * @param {ProductDiscoveryUpdateArgs} args - Arguments to update one ProductDiscovery.
+     * @example
+     * // Update one ProductDiscovery
+     * const productDiscovery = await prisma.productDiscovery.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ProductDiscoveryUpdateArgs>(args: SelectSubset<T, ProductDiscoveryUpdateArgs<ExtArgs>>): Prisma__ProductDiscoveryClient<$Result.GetResult<Prisma.$ProductDiscoveryPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ProductDiscoveries.
+     * @param {ProductDiscoveryDeleteManyArgs} args - Arguments to filter ProductDiscoveries to delete.
+     * @example
+     * // Delete a few ProductDiscoveries
+     * const { count } = await prisma.productDiscovery.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ProductDiscoveryDeleteManyArgs>(args?: SelectSubset<T, ProductDiscoveryDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ProductDiscoveries.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProductDiscoveryUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ProductDiscoveries
+     * const productDiscovery = await prisma.productDiscovery.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ProductDiscoveryUpdateManyArgs>(args: SelectSubset<T, ProductDiscoveryUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one ProductDiscovery.
+     * @param {ProductDiscoveryUpsertArgs} args - Arguments to update or create a ProductDiscovery.
+     * @example
+     * // Update or create a ProductDiscovery
+     * const productDiscovery = await prisma.productDiscovery.upsert({
+     *   create: {
+     *     // ... data to create a ProductDiscovery
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ProductDiscovery we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ProductDiscoveryUpsertArgs>(args: SelectSubset<T, ProductDiscoveryUpsertArgs<ExtArgs>>): Prisma__ProductDiscoveryClient<$Result.GetResult<Prisma.$ProductDiscoveryPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ProductDiscoveries.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProductDiscoveryCountArgs} args - Arguments to filter ProductDiscoveries to count.
+     * @example
+     * // Count the number of ProductDiscoveries
+     * const count = await prisma.productDiscovery.count({
+     *   where: {
+     *     // ... the filter for the ProductDiscoveries we want to count
+     *   }
+     * })
+    **/
+    count<T extends ProductDiscoveryCountArgs>(
+      args?: Subset<T, ProductDiscoveryCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ProductDiscoveryCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ProductDiscovery.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProductDiscoveryAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ProductDiscoveryAggregateArgs>(args: Subset<T, ProductDiscoveryAggregateArgs>): Prisma.PrismaPromise<GetProductDiscoveryAggregateType<T>>
+
+    /**
+     * Group by ProductDiscovery.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProductDiscoveryGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ProductDiscoveryGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ProductDiscoveryGroupByArgs['orderBy'] }
+        : { orderBy?: ProductDiscoveryGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ProductDiscoveryGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetProductDiscoveryGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ProductDiscovery model
+   */
+  readonly fields: ProductDiscoveryFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ProductDiscovery.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ProductDiscoveryClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    image<T extends ProductDiscovery$imageArgs<ExtArgs> = {}>(args?: Subset<T, ProductDiscovery$imageArgs<ExtArgs>>): Prisma__ProductDiscoveryImageClient<$Result.GetResult<Prisma.$ProductDiscoveryImagePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ProductDiscovery model
+   */
+  interface ProductDiscoveryFieldRefs {
+    readonly id: FieldRef<"ProductDiscovery", 'Int'>
+    readonly userId: FieldRef<"ProductDiscovery", 'Int'>
+    readonly productName: FieldRef<"ProductDiscovery", 'String'>
+    readonly brand: FieldRef<"ProductDiscovery", 'String'>
+    readonly productKey: FieldRef<"ProductDiscovery", 'String'>
+    readonly imageHash: FieldRef<"ProductDiscovery", 'String'>
+    readonly review: FieldRef<"ProductDiscovery", 'String'>
+    readonly rating: FieldRef<"ProductDiscovery", 'Int'>
+    readonly discoveredOn: FieldRef<"ProductDiscovery", 'String'>
+    readonly version: FieldRef<"ProductDiscovery", 'Int'>
+    readonly createdAt: FieldRef<"ProductDiscovery", 'DateTime'>
+    readonly updatedAt: FieldRef<"ProductDiscovery", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ProductDiscovery findUnique
+   */
+  export type ProductDiscoveryFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductDiscovery
+     */
+    select?: ProductDiscoverySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductDiscovery
+     */
+    omit?: ProductDiscoveryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductDiscoveryInclude<ExtArgs> | null
+    /**
+     * Filter, which ProductDiscovery to fetch.
+     */
+    where: ProductDiscoveryWhereUniqueInput
+  }
+
+  /**
+   * ProductDiscovery findUniqueOrThrow
+   */
+  export type ProductDiscoveryFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductDiscovery
+     */
+    select?: ProductDiscoverySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductDiscovery
+     */
+    omit?: ProductDiscoveryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductDiscoveryInclude<ExtArgs> | null
+    /**
+     * Filter, which ProductDiscovery to fetch.
+     */
+    where: ProductDiscoveryWhereUniqueInput
+  }
+
+  /**
+   * ProductDiscovery findFirst
+   */
+  export type ProductDiscoveryFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductDiscovery
+     */
+    select?: ProductDiscoverySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductDiscovery
+     */
+    omit?: ProductDiscoveryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductDiscoveryInclude<ExtArgs> | null
+    /**
+     * Filter, which ProductDiscovery to fetch.
+     */
+    where?: ProductDiscoveryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProductDiscoveries to fetch.
+     */
+    orderBy?: ProductDiscoveryOrderByWithRelationInput | ProductDiscoveryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ProductDiscoveries.
+     */
+    cursor?: ProductDiscoveryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProductDiscoveries from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProductDiscoveries.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ProductDiscoveries.
+     */
+    distinct?: ProductDiscoveryScalarFieldEnum | ProductDiscoveryScalarFieldEnum[]
+  }
+
+  /**
+   * ProductDiscovery findFirstOrThrow
+   */
+  export type ProductDiscoveryFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductDiscovery
+     */
+    select?: ProductDiscoverySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductDiscovery
+     */
+    omit?: ProductDiscoveryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductDiscoveryInclude<ExtArgs> | null
+    /**
+     * Filter, which ProductDiscovery to fetch.
+     */
+    where?: ProductDiscoveryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProductDiscoveries to fetch.
+     */
+    orderBy?: ProductDiscoveryOrderByWithRelationInput | ProductDiscoveryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ProductDiscoveries.
+     */
+    cursor?: ProductDiscoveryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProductDiscoveries from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProductDiscoveries.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ProductDiscoveries.
+     */
+    distinct?: ProductDiscoveryScalarFieldEnum | ProductDiscoveryScalarFieldEnum[]
+  }
+
+  /**
+   * ProductDiscovery findMany
+   */
+  export type ProductDiscoveryFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductDiscovery
+     */
+    select?: ProductDiscoverySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductDiscovery
+     */
+    omit?: ProductDiscoveryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductDiscoveryInclude<ExtArgs> | null
+    /**
+     * Filter, which ProductDiscoveries to fetch.
+     */
+    where?: ProductDiscoveryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProductDiscoveries to fetch.
+     */
+    orderBy?: ProductDiscoveryOrderByWithRelationInput | ProductDiscoveryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ProductDiscoveries.
+     */
+    cursor?: ProductDiscoveryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProductDiscoveries from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProductDiscoveries.
+     */
+    skip?: number
+    distinct?: ProductDiscoveryScalarFieldEnum | ProductDiscoveryScalarFieldEnum[]
+  }
+
+  /**
+   * ProductDiscovery create
+   */
+  export type ProductDiscoveryCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductDiscovery
+     */
+    select?: ProductDiscoverySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductDiscovery
+     */
+    omit?: ProductDiscoveryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductDiscoveryInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ProductDiscovery.
+     */
+    data: XOR<ProductDiscoveryCreateInput, ProductDiscoveryUncheckedCreateInput>
+  }
+
+  /**
+   * ProductDiscovery createMany
+   */
+  export type ProductDiscoveryCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ProductDiscoveries.
+     */
+    data: ProductDiscoveryCreateManyInput | ProductDiscoveryCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ProductDiscovery update
+   */
+  export type ProductDiscoveryUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductDiscovery
+     */
+    select?: ProductDiscoverySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductDiscovery
+     */
+    omit?: ProductDiscoveryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductDiscoveryInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ProductDiscovery.
+     */
+    data: XOR<ProductDiscoveryUpdateInput, ProductDiscoveryUncheckedUpdateInput>
+    /**
+     * Choose, which ProductDiscovery to update.
+     */
+    where: ProductDiscoveryWhereUniqueInput
+  }
+
+  /**
+   * ProductDiscovery updateMany
+   */
+  export type ProductDiscoveryUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ProductDiscoveries.
+     */
+    data: XOR<ProductDiscoveryUpdateManyMutationInput, ProductDiscoveryUncheckedUpdateManyInput>
+    /**
+     * Filter which ProductDiscoveries to update
+     */
+    where?: ProductDiscoveryWhereInput
+    /**
+     * Limit how many ProductDiscoveries to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ProductDiscovery upsert
+   */
+  export type ProductDiscoveryUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductDiscovery
+     */
+    select?: ProductDiscoverySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductDiscovery
+     */
+    omit?: ProductDiscoveryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductDiscoveryInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ProductDiscovery to update in case it exists.
+     */
+    where: ProductDiscoveryWhereUniqueInput
+    /**
+     * In case the ProductDiscovery found by the `where` argument doesn't exist, create a new ProductDiscovery with this data.
+     */
+    create: XOR<ProductDiscoveryCreateInput, ProductDiscoveryUncheckedCreateInput>
+    /**
+     * In case the ProductDiscovery was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ProductDiscoveryUpdateInput, ProductDiscoveryUncheckedUpdateInput>
+  }
+
+  /**
+   * ProductDiscovery delete
+   */
+  export type ProductDiscoveryDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductDiscovery
+     */
+    select?: ProductDiscoverySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductDiscovery
+     */
+    omit?: ProductDiscoveryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductDiscoveryInclude<ExtArgs> | null
+    /**
+     * Filter which ProductDiscovery to delete.
+     */
+    where: ProductDiscoveryWhereUniqueInput
+  }
+
+  /**
+   * ProductDiscovery deleteMany
+   */
+  export type ProductDiscoveryDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ProductDiscoveries to delete
+     */
+    where?: ProductDiscoveryWhereInput
+    /**
+     * Limit how many ProductDiscoveries to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ProductDiscovery.image
+   */
+  export type ProductDiscovery$imageArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductDiscoveryImage
+     */
+    select?: ProductDiscoveryImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductDiscoveryImage
+     */
+    omit?: ProductDiscoveryImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductDiscoveryImageInclude<ExtArgs> | null
+    where?: ProductDiscoveryImageWhereInput
+  }
+
+  /**
+   * ProductDiscovery without action
+   */
+  export type ProductDiscoveryDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductDiscovery
+     */
+    select?: ProductDiscoverySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductDiscovery
+     */
+    omit?: ProductDiscoveryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductDiscoveryInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ProductDiscoveryImage
+   */
+
+  export type AggregateProductDiscoveryImage = {
+    _count: ProductDiscoveryImageCountAggregateOutputType | null
+    _avg: ProductDiscoveryImageAvgAggregateOutputType | null
+    _sum: ProductDiscoveryImageSumAggregateOutputType | null
+    _min: ProductDiscoveryImageMinAggregateOutputType | null
+    _max: ProductDiscoveryImageMaxAggregateOutputType | null
+  }
+
+  export type ProductDiscoveryImageAvgAggregateOutputType = {
+    discoveryId: number | null
+  }
+
+  export type ProductDiscoveryImageSumAggregateOutputType = {
+    discoveryId: number | null
+  }
+
+  export type ProductDiscoveryImageMinAggregateOutputType = {
+    discoveryId: number | null
+    bytes: Bytes | null
+    thumbnail: Bytes | null
+  }
+
+  export type ProductDiscoveryImageMaxAggregateOutputType = {
+    discoveryId: number | null
+    bytes: Bytes | null
+    thumbnail: Bytes | null
+  }
+
+  export type ProductDiscoveryImageCountAggregateOutputType = {
+    discoveryId: number
+    bytes: number
+    thumbnail: number
+    _all: number
+  }
+
+
+  export type ProductDiscoveryImageAvgAggregateInputType = {
+    discoveryId?: true
+  }
+
+  export type ProductDiscoveryImageSumAggregateInputType = {
+    discoveryId?: true
+  }
+
+  export type ProductDiscoveryImageMinAggregateInputType = {
+    discoveryId?: true
+    bytes?: true
+    thumbnail?: true
+  }
+
+  export type ProductDiscoveryImageMaxAggregateInputType = {
+    discoveryId?: true
+    bytes?: true
+    thumbnail?: true
+  }
+
+  export type ProductDiscoveryImageCountAggregateInputType = {
+    discoveryId?: true
+    bytes?: true
+    thumbnail?: true
+    _all?: true
+  }
+
+  export type ProductDiscoveryImageAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ProductDiscoveryImage to aggregate.
+     */
+    where?: ProductDiscoveryImageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProductDiscoveryImages to fetch.
+     */
+    orderBy?: ProductDiscoveryImageOrderByWithRelationInput | ProductDiscoveryImageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ProductDiscoveryImageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProductDiscoveryImages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProductDiscoveryImages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ProductDiscoveryImages
+    **/
+    _count?: true | ProductDiscoveryImageCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ProductDiscoveryImageAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ProductDiscoveryImageSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ProductDiscoveryImageMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ProductDiscoveryImageMaxAggregateInputType
+  }
+
+  export type GetProductDiscoveryImageAggregateType<T extends ProductDiscoveryImageAggregateArgs> = {
+        [P in keyof T & keyof AggregateProductDiscoveryImage]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateProductDiscoveryImage[P]>
+      : GetScalarType<T[P], AggregateProductDiscoveryImage[P]>
+  }
+
+
+
+
+  export type ProductDiscoveryImageGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ProductDiscoveryImageWhereInput
+    orderBy?: ProductDiscoveryImageOrderByWithAggregationInput | ProductDiscoveryImageOrderByWithAggregationInput[]
+    by: ProductDiscoveryImageScalarFieldEnum[] | ProductDiscoveryImageScalarFieldEnum
+    having?: ProductDiscoveryImageScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ProductDiscoveryImageCountAggregateInputType | true
+    _avg?: ProductDiscoveryImageAvgAggregateInputType
+    _sum?: ProductDiscoveryImageSumAggregateInputType
+    _min?: ProductDiscoveryImageMinAggregateInputType
+    _max?: ProductDiscoveryImageMaxAggregateInputType
+  }
+
+  export type ProductDiscoveryImageGroupByOutputType = {
+    discoveryId: number
+    bytes: Bytes
+    thumbnail: Bytes
+    _count: ProductDiscoveryImageCountAggregateOutputType | null
+    _avg: ProductDiscoveryImageAvgAggregateOutputType | null
+    _sum: ProductDiscoveryImageSumAggregateOutputType | null
+    _min: ProductDiscoveryImageMinAggregateOutputType | null
+    _max: ProductDiscoveryImageMaxAggregateOutputType | null
+  }
+
+  type GetProductDiscoveryImageGroupByPayload<T extends ProductDiscoveryImageGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ProductDiscoveryImageGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ProductDiscoveryImageGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ProductDiscoveryImageGroupByOutputType[P]>
+            : GetScalarType<T[P], ProductDiscoveryImageGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ProductDiscoveryImageSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    discoveryId?: boolean
+    bytes?: boolean
+    thumbnail?: boolean
+    discovery?: boolean | ProductDiscoveryDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["productDiscoveryImage"]>
+
+
+
+  export type ProductDiscoveryImageSelectScalar = {
+    discoveryId?: boolean
+    bytes?: boolean
+    thumbnail?: boolean
+  }
+
+  export type ProductDiscoveryImageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"discoveryId" | "bytes" | "thumbnail", ExtArgs["result"]["productDiscoveryImage"]>
+  export type ProductDiscoveryImageInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    discovery?: boolean | ProductDiscoveryDefaultArgs<ExtArgs>
+  }
+
+  export type $ProductDiscoveryImagePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ProductDiscoveryImage"
+    objects: {
+      discovery: Prisma.$ProductDiscoveryPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      discoveryId: number
+      bytes: Prisma.Bytes
+      thumbnail: Prisma.Bytes
+    }, ExtArgs["result"]["productDiscoveryImage"]>
+    composites: {}
+  }
+
+  type ProductDiscoveryImageGetPayload<S extends boolean | null | undefined | ProductDiscoveryImageDefaultArgs> = $Result.GetResult<Prisma.$ProductDiscoveryImagePayload, S>
+
+  type ProductDiscoveryImageCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ProductDiscoveryImageFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ProductDiscoveryImageCountAggregateInputType | true
+    }
+
+  export interface ProductDiscoveryImageDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ProductDiscoveryImage'], meta: { name: 'ProductDiscoveryImage' } }
+    /**
+     * Find zero or one ProductDiscoveryImage that matches the filter.
+     * @param {ProductDiscoveryImageFindUniqueArgs} args - Arguments to find a ProductDiscoveryImage
+     * @example
+     * // Get one ProductDiscoveryImage
+     * const productDiscoveryImage = await prisma.productDiscoveryImage.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ProductDiscoveryImageFindUniqueArgs>(args: SelectSubset<T, ProductDiscoveryImageFindUniqueArgs<ExtArgs>>): Prisma__ProductDiscoveryImageClient<$Result.GetResult<Prisma.$ProductDiscoveryImagePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ProductDiscoveryImage that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ProductDiscoveryImageFindUniqueOrThrowArgs} args - Arguments to find a ProductDiscoveryImage
+     * @example
+     * // Get one ProductDiscoveryImage
+     * const productDiscoveryImage = await prisma.productDiscoveryImage.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ProductDiscoveryImageFindUniqueOrThrowArgs>(args: SelectSubset<T, ProductDiscoveryImageFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ProductDiscoveryImageClient<$Result.GetResult<Prisma.$ProductDiscoveryImagePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ProductDiscoveryImage that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProductDiscoveryImageFindFirstArgs} args - Arguments to find a ProductDiscoveryImage
+     * @example
+     * // Get one ProductDiscoveryImage
+     * const productDiscoveryImage = await prisma.productDiscoveryImage.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ProductDiscoveryImageFindFirstArgs>(args?: SelectSubset<T, ProductDiscoveryImageFindFirstArgs<ExtArgs>>): Prisma__ProductDiscoveryImageClient<$Result.GetResult<Prisma.$ProductDiscoveryImagePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ProductDiscoveryImage that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProductDiscoveryImageFindFirstOrThrowArgs} args - Arguments to find a ProductDiscoveryImage
+     * @example
+     * // Get one ProductDiscoveryImage
+     * const productDiscoveryImage = await prisma.productDiscoveryImage.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ProductDiscoveryImageFindFirstOrThrowArgs>(args?: SelectSubset<T, ProductDiscoveryImageFindFirstOrThrowArgs<ExtArgs>>): Prisma__ProductDiscoveryImageClient<$Result.GetResult<Prisma.$ProductDiscoveryImagePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ProductDiscoveryImages that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProductDiscoveryImageFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ProductDiscoveryImages
+     * const productDiscoveryImages = await prisma.productDiscoveryImage.findMany()
+     * 
+     * // Get first 10 ProductDiscoveryImages
+     * const productDiscoveryImages = await prisma.productDiscoveryImage.findMany({ take: 10 })
+     * 
+     * // Only select the `discoveryId`
+     * const productDiscoveryImageWithDiscoveryIdOnly = await prisma.productDiscoveryImage.findMany({ select: { discoveryId: true } })
+     * 
+     */
+    findMany<T extends ProductDiscoveryImageFindManyArgs>(args?: SelectSubset<T, ProductDiscoveryImageFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductDiscoveryImagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ProductDiscoveryImage.
+     * @param {ProductDiscoveryImageCreateArgs} args - Arguments to create a ProductDiscoveryImage.
+     * @example
+     * // Create one ProductDiscoveryImage
+     * const ProductDiscoveryImage = await prisma.productDiscoveryImage.create({
+     *   data: {
+     *     // ... data to create a ProductDiscoveryImage
+     *   }
+     * })
+     * 
+     */
+    create<T extends ProductDiscoveryImageCreateArgs>(args: SelectSubset<T, ProductDiscoveryImageCreateArgs<ExtArgs>>): Prisma__ProductDiscoveryImageClient<$Result.GetResult<Prisma.$ProductDiscoveryImagePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ProductDiscoveryImages.
+     * @param {ProductDiscoveryImageCreateManyArgs} args - Arguments to create many ProductDiscoveryImages.
+     * @example
+     * // Create many ProductDiscoveryImages
+     * const productDiscoveryImage = await prisma.productDiscoveryImage.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ProductDiscoveryImageCreateManyArgs>(args?: SelectSubset<T, ProductDiscoveryImageCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a ProductDiscoveryImage.
+     * @param {ProductDiscoveryImageDeleteArgs} args - Arguments to delete one ProductDiscoveryImage.
+     * @example
+     * // Delete one ProductDiscoveryImage
+     * const ProductDiscoveryImage = await prisma.productDiscoveryImage.delete({
+     *   where: {
+     *     // ... filter to delete one ProductDiscoveryImage
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ProductDiscoveryImageDeleteArgs>(args: SelectSubset<T, ProductDiscoveryImageDeleteArgs<ExtArgs>>): Prisma__ProductDiscoveryImageClient<$Result.GetResult<Prisma.$ProductDiscoveryImagePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ProductDiscoveryImage.
+     * @param {ProductDiscoveryImageUpdateArgs} args - Arguments to update one ProductDiscoveryImage.
+     * @example
+     * // Update one ProductDiscoveryImage
+     * const productDiscoveryImage = await prisma.productDiscoveryImage.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ProductDiscoveryImageUpdateArgs>(args: SelectSubset<T, ProductDiscoveryImageUpdateArgs<ExtArgs>>): Prisma__ProductDiscoveryImageClient<$Result.GetResult<Prisma.$ProductDiscoveryImagePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ProductDiscoveryImages.
+     * @param {ProductDiscoveryImageDeleteManyArgs} args - Arguments to filter ProductDiscoveryImages to delete.
+     * @example
+     * // Delete a few ProductDiscoveryImages
+     * const { count } = await prisma.productDiscoveryImage.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ProductDiscoveryImageDeleteManyArgs>(args?: SelectSubset<T, ProductDiscoveryImageDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ProductDiscoveryImages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProductDiscoveryImageUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ProductDiscoveryImages
+     * const productDiscoveryImage = await prisma.productDiscoveryImage.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ProductDiscoveryImageUpdateManyArgs>(args: SelectSubset<T, ProductDiscoveryImageUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one ProductDiscoveryImage.
+     * @param {ProductDiscoveryImageUpsertArgs} args - Arguments to update or create a ProductDiscoveryImage.
+     * @example
+     * // Update or create a ProductDiscoveryImage
+     * const productDiscoveryImage = await prisma.productDiscoveryImage.upsert({
+     *   create: {
+     *     // ... data to create a ProductDiscoveryImage
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ProductDiscoveryImage we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ProductDiscoveryImageUpsertArgs>(args: SelectSubset<T, ProductDiscoveryImageUpsertArgs<ExtArgs>>): Prisma__ProductDiscoveryImageClient<$Result.GetResult<Prisma.$ProductDiscoveryImagePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ProductDiscoveryImages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProductDiscoveryImageCountArgs} args - Arguments to filter ProductDiscoveryImages to count.
+     * @example
+     * // Count the number of ProductDiscoveryImages
+     * const count = await prisma.productDiscoveryImage.count({
+     *   where: {
+     *     // ... the filter for the ProductDiscoveryImages we want to count
+     *   }
+     * })
+    **/
+    count<T extends ProductDiscoveryImageCountArgs>(
+      args?: Subset<T, ProductDiscoveryImageCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ProductDiscoveryImageCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ProductDiscoveryImage.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProductDiscoveryImageAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ProductDiscoveryImageAggregateArgs>(args: Subset<T, ProductDiscoveryImageAggregateArgs>): Prisma.PrismaPromise<GetProductDiscoveryImageAggregateType<T>>
+
+    /**
+     * Group by ProductDiscoveryImage.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProductDiscoveryImageGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ProductDiscoveryImageGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ProductDiscoveryImageGroupByArgs['orderBy'] }
+        : { orderBy?: ProductDiscoveryImageGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ProductDiscoveryImageGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetProductDiscoveryImageGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ProductDiscoveryImage model
+   */
+  readonly fields: ProductDiscoveryImageFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ProductDiscoveryImage.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ProductDiscoveryImageClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    discovery<T extends ProductDiscoveryDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ProductDiscoveryDefaultArgs<ExtArgs>>): Prisma__ProductDiscoveryClient<$Result.GetResult<Prisma.$ProductDiscoveryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ProductDiscoveryImage model
+   */
+  interface ProductDiscoveryImageFieldRefs {
+    readonly discoveryId: FieldRef<"ProductDiscoveryImage", 'Int'>
+    readonly bytes: FieldRef<"ProductDiscoveryImage", 'Bytes'>
+    readonly thumbnail: FieldRef<"ProductDiscoveryImage", 'Bytes'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ProductDiscoveryImage findUnique
+   */
+  export type ProductDiscoveryImageFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductDiscoveryImage
+     */
+    select?: ProductDiscoveryImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductDiscoveryImage
+     */
+    omit?: ProductDiscoveryImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductDiscoveryImageInclude<ExtArgs> | null
+    /**
+     * Filter, which ProductDiscoveryImage to fetch.
+     */
+    where: ProductDiscoveryImageWhereUniqueInput
+  }
+
+  /**
+   * ProductDiscoveryImage findUniqueOrThrow
+   */
+  export type ProductDiscoveryImageFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductDiscoveryImage
+     */
+    select?: ProductDiscoveryImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductDiscoveryImage
+     */
+    omit?: ProductDiscoveryImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductDiscoveryImageInclude<ExtArgs> | null
+    /**
+     * Filter, which ProductDiscoveryImage to fetch.
+     */
+    where: ProductDiscoveryImageWhereUniqueInput
+  }
+
+  /**
+   * ProductDiscoveryImage findFirst
+   */
+  export type ProductDiscoveryImageFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductDiscoveryImage
+     */
+    select?: ProductDiscoveryImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductDiscoveryImage
+     */
+    omit?: ProductDiscoveryImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductDiscoveryImageInclude<ExtArgs> | null
+    /**
+     * Filter, which ProductDiscoveryImage to fetch.
+     */
+    where?: ProductDiscoveryImageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProductDiscoveryImages to fetch.
+     */
+    orderBy?: ProductDiscoveryImageOrderByWithRelationInput | ProductDiscoveryImageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ProductDiscoveryImages.
+     */
+    cursor?: ProductDiscoveryImageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProductDiscoveryImages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProductDiscoveryImages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ProductDiscoveryImages.
+     */
+    distinct?: ProductDiscoveryImageScalarFieldEnum | ProductDiscoveryImageScalarFieldEnum[]
+  }
+
+  /**
+   * ProductDiscoveryImage findFirstOrThrow
+   */
+  export type ProductDiscoveryImageFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductDiscoveryImage
+     */
+    select?: ProductDiscoveryImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductDiscoveryImage
+     */
+    omit?: ProductDiscoveryImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductDiscoveryImageInclude<ExtArgs> | null
+    /**
+     * Filter, which ProductDiscoveryImage to fetch.
+     */
+    where?: ProductDiscoveryImageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProductDiscoveryImages to fetch.
+     */
+    orderBy?: ProductDiscoveryImageOrderByWithRelationInput | ProductDiscoveryImageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ProductDiscoveryImages.
+     */
+    cursor?: ProductDiscoveryImageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProductDiscoveryImages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProductDiscoveryImages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ProductDiscoveryImages.
+     */
+    distinct?: ProductDiscoveryImageScalarFieldEnum | ProductDiscoveryImageScalarFieldEnum[]
+  }
+
+  /**
+   * ProductDiscoveryImage findMany
+   */
+  export type ProductDiscoveryImageFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductDiscoveryImage
+     */
+    select?: ProductDiscoveryImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductDiscoveryImage
+     */
+    omit?: ProductDiscoveryImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductDiscoveryImageInclude<ExtArgs> | null
+    /**
+     * Filter, which ProductDiscoveryImages to fetch.
+     */
+    where?: ProductDiscoveryImageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProductDiscoveryImages to fetch.
+     */
+    orderBy?: ProductDiscoveryImageOrderByWithRelationInput | ProductDiscoveryImageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ProductDiscoveryImages.
+     */
+    cursor?: ProductDiscoveryImageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProductDiscoveryImages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProductDiscoveryImages.
+     */
+    skip?: number
+    distinct?: ProductDiscoveryImageScalarFieldEnum | ProductDiscoveryImageScalarFieldEnum[]
+  }
+
+  /**
+   * ProductDiscoveryImage create
+   */
+  export type ProductDiscoveryImageCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductDiscoveryImage
+     */
+    select?: ProductDiscoveryImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductDiscoveryImage
+     */
+    omit?: ProductDiscoveryImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductDiscoveryImageInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ProductDiscoveryImage.
+     */
+    data: XOR<ProductDiscoveryImageCreateInput, ProductDiscoveryImageUncheckedCreateInput>
+  }
+
+  /**
+   * ProductDiscoveryImage createMany
+   */
+  export type ProductDiscoveryImageCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ProductDiscoveryImages.
+     */
+    data: ProductDiscoveryImageCreateManyInput | ProductDiscoveryImageCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ProductDiscoveryImage update
+   */
+  export type ProductDiscoveryImageUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductDiscoveryImage
+     */
+    select?: ProductDiscoveryImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductDiscoveryImage
+     */
+    omit?: ProductDiscoveryImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductDiscoveryImageInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ProductDiscoveryImage.
+     */
+    data: XOR<ProductDiscoveryImageUpdateInput, ProductDiscoveryImageUncheckedUpdateInput>
+    /**
+     * Choose, which ProductDiscoveryImage to update.
+     */
+    where: ProductDiscoveryImageWhereUniqueInput
+  }
+
+  /**
+   * ProductDiscoveryImage updateMany
+   */
+  export type ProductDiscoveryImageUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ProductDiscoveryImages.
+     */
+    data: XOR<ProductDiscoveryImageUpdateManyMutationInput, ProductDiscoveryImageUncheckedUpdateManyInput>
+    /**
+     * Filter which ProductDiscoveryImages to update
+     */
+    where?: ProductDiscoveryImageWhereInput
+    /**
+     * Limit how many ProductDiscoveryImages to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ProductDiscoveryImage upsert
+   */
+  export type ProductDiscoveryImageUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductDiscoveryImage
+     */
+    select?: ProductDiscoveryImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductDiscoveryImage
+     */
+    omit?: ProductDiscoveryImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductDiscoveryImageInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ProductDiscoveryImage to update in case it exists.
+     */
+    where: ProductDiscoveryImageWhereUniqueInput
+    /**
+     * In case the ProductDiscoveryImage found by the `where` argument doesn't exist, create a new ProductDiscoveryImage with this data.
+     */
+    create: XOR<ProductDiscoveryImageCreateInput, ProductDiscoveryImageUncheckedCreateInput>
+    /**
+     * In case the ProductDiscoveryImage was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ProductDiscoveryImageUpdateInput, ProductDiscoveryImageUncheckedUpdateInput>
+  }
+
+  /**
+   * ProductDiscoveryImage delete
+   */
+  export type ProductDiscoveryImageDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductDiscoveryImage
+     */
+    select?: ProductDiscoveryImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductDiscoveryImage
+     */
+    omit?: ProductDiscoveryImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductDiscoveryImageInclude<ExtArgs> | null
+    /**
+     * Filter which ProductDiscoveryImage to delete.
+     */
+    where: ProductDiscoveryImageWhereUniqueInput
+  }
+
+  /**
+   * ProductDiscoveryImage deleteMany
+   */
+  export type ProductDiscoveryImageDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ProductDiscoveryImages to delete
+     */
+    where?: ProductDiscoveryImageWhereInput
+    /**
+     * Limit how many ProductDiscoveryImages to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ProductDiscoveryImage without action
+   */
+  export type ProductDiscoveryImageDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductDiscoveryImage
+     */
+    select?: ProductDiscoveryImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductDiscoveryImage
+     */
+    omit?: ProductDiscoveryImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductDiscoveryImageInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -11042,6 +13261,33 @@ export namespace Prisma {
   export type FriendRequestScalarFieldEnum = (typeof FriendRequestScalarFieldEnum)[keyof typeof FriendRequestScalarFieldEnum]
 
 
+  export const ProductDiscoveryScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    productName: 'productName',
+    brand: 'brand',
+    productKey: 'productKey',
+    imageHash: 'imageHash',
+    review: 'review',
+    rating: 'rating',
+    discoveredOn: 'discoveredOn',
+    version: 'version',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ProductDiscoveryScalarFieldEnum = (typeof ProductDiscoveryScalarFieldEnum)[keyof typeof ProductDiscoveryScalarFieldEnum]
+
+
+  export const ProductDiscoveryImageScalarFieldEnum: {
+    discoveryId: 'discoveryId',
+    bytes: 'bytes',
+    thumbnail: 'thumbnail'
+  };
+
+  export type ProductDiscoveryImageScalarFieldEnum = (typeof ProductDiscoveryImageScalarFieldEnum)[keyof typeof ProductDiscoveryImageScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -11152,6 +13398,18 @@ export namespace Prisma {
   export type FriendRequestOrderByRelevanceFieldEnum = (typeof FriendRequestOrderByRelevanceFieldEnum)[keyof typeof FriendRequestOrderByRelevanceFieldEnum]
 
 
+  export const ProductDiscoveryOrderByRelevanceFieldEnum: {
+    productName: 'productName',
+    brand: 'brand',
+    productKey: 'productKey',
+    imageHash: 'imageHash',
+    review: 'review',
+    discoveredOn: 'discoveredOn'
+  };
+
+  export type ProductDiscoveryOrderByRelevanceFieldEnum = (typeof ProductDiscoveryOrderByRelevanceFieldEnum)[keyof typeof ProductDiscoveryOrderByRelevanceFieldEnum]
+
+
   /**
    * Field references
    */
@@ -11190,6 +13448,13 @@ export namespace Prisma {
    */
   export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
     
+
+
+  /**
+   * Reference to a field of type 'Bytes'
+   */
+  export type BytesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Bytes'>
+    
   /**
    * Deep Input Types
    */
@@ -11209,6 +13474,7 @@ export namespace Prisma {
     username?: StringNullableFilter<"User"> | string | null
     usernameChangedAt?: DateTimeNullableFilter<"User"> | Date | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
+    discoveries?: ProductDiscoveryListRelationFilter
     profile?: XOR<ProfileNullableScalarRelationFilter, ProfileWhereInput> | null
     skincareLogs?: SkincareLogListRelationFilter
     communityPosts?: CommunityPostListRelationFilter
@@ -11228,6 +13494,7 @@ export namespace Prisma {
     username?: SortOrderInput | SortOrder
     usernameChangedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
+    discoveries?: ProductDiscoveryOrderByRelationAggregateInput
     profile?: ProfileOrderByWithRelationInput
     skincareLogs?: SkincareLogOrderByRelationAggregateInput
     communityPosts?: CommunityPostOrderByRelationAggregateInput
@@ -11251,6 +13518,7 @@ export namespace Prisma {
     isNewUser?: BoolFilter<"User"> | boolean
     usernameChangedAt?: DateTimeNullableFilter<"User"> | Date | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
+    discoveries?: ProductDiscoveryListRelationFilter
     profile?: XOR<ProfileNullableScalarRelationFilter, ProfileWhereInput> | null
     skincareLogs?: SkincareLogListRelationFilter
     communityPosts?: CommunityPostListRelationFilter
@@ -11930,6 +14198,151 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"FriendRequest"> | Date | string
   }
 
+  export type ProductDiscoveryWhereInput = {
+    AND?: ProductDiscoveryWhereInput | ProductDiscoveryWhereInput[]
+    OR?: ProductDiscoveryWhereInput[]
+    NOT?: ProductDiscoveryWhereInput | ProductDiscoveryWhereInput[]
+    id?: IntFilter<"ProductDiscovery"> | number
+    userId?: IntFilter<"ProductDiscovery"> | number
+    productName?: StringFilter<"ProductDiscovery"> | string
+    brand?: StringFilter<"ProductDiscovery"> | string
+    productKey?: StringFilter<"ProductDiscovery"> | string
+    imageHash?: StringFilter<"ProductDiscovery"> | string
+    review?: StringFilter<"ProductDiscovery"> | string
+    rating?: IntNullableFilter<"ProductDiscovery"> | number | null
+    discoveredOn?: StringFilter<"ProductDiscovery"> | string
+    version?: IntFilter<"ProductDiscovery"> | number
+    createdAt?: DateTimeFilter<"ProductDiscovery"> | Date | string
+    updatedAt?: DateTimeFilter<"ProductDiscovery"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    image?: XOR<ProductDiscoveryImageNullableScalarRelationFilter, ProductDiscoveryImageWhereInput> | null
+  }
+
+  export type ProductDiscoveryOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    productName?: SortOrder
+    brand?: SortOrder
+    productKey?: SortOrder
+    imageHash?: SortOrder
+    review?: SortOrder
+    rating?: SortOrderInput | SortOrder
+    discoveredOn?: SortOrder
+    version?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+    image?: ProductDiscoveryImageOrderByWithRelationInput
+    _relevance?: ProductDiscoveryOrderByRelevanceInput
+  }
+
+  export type ProductDiscoveryWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    userId_productKey?: ProductDiscoveryUserIdProductKeyCompoundUniqueInput
+    userId_imageHash?: ProductDiscoveryUserIdImageHashCompoundUniqueInput
+    AND?: ProductDiscoveryWhereInput | ProductDiscoveryWhereInput[]
+    OR?: ProductDiscoveryWhereInput[]
+    NOT?: ProductDiscoveryWhereInput | ProductDiscoveryWhereInput[]
+    userId?: IntFilter<"ProductDiscovery"> | number
+    productName?: StringFilter<"ProductDiscovery"> | string
+    brand?: StringFilter<"ProductDiscovery"> | string
+    productKey?: StringFilter<"ProductDiscovery"> | string
+    imageHash?: StringFilter<"ProductDiscovery"> | string
+    review?: StringFilter<"ProductDiscovery"> | string
+    rating?: IntNullableFilter<"ProductDiscovery"> | number | null
+    discoveredOn?: StringFilter<"ProductDiscovery"> | string
+    version?: IntFilter<"ProductDiscovery"> | number
+    createdAt?: DateTimeFilter<"ProductDiscovery"> | Date | string
+    updatedAt?: DateTimeFilter<"ProductDiscovery"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    image?: XOR<ProductDiscoveryImageNullableScalarRelationFilter, ProductDiscoveryImageWhereInput> | null
+  }, "id" | "userId_productKey" | "userId_imageHash">
+
+  export type ProductDiscoveryOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    productName?: SortOrder
+    brand?: SortOrder
+    productKey?: SortOrder
+    imageHash?: SortOrder
+    review?: SortOrder
+    rating?: SortOrderInput | SortOrder
+    discoveredOn?: SortOrder
+    version?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ProductDiscoveryCountOrderByAggregateInput
+    _avg?: ProductDiscoveryAvgOrderByAggregateInput
+    _max?: ProductDiscoveryMaxOrderByAggregateInput
+    _min?: ProductDiscoveryMinOrderByAggregateInput
+    _sum?: ProductDiscoverySumOrderByAggregateInput
+  }
+
+  export type ProductDiscoveryScalarWhereWithAggregatesInput = {
+    AND?: ProductDiscoveryScalarWhereWithAggregatesInput | ProductDiscoveryScalarWhereWithAggregatesInput[]
+    OR?: ProductDiscoveryScalarWhereWithAggregatesInput[]
+    NOT?: ProductDiscoveryScalarWhereWithAggregatesInput | ProductDiscoveryScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"ProductDiscovery"> | number
+    userId?: IntWithAggregatesFilter<"ProductDiscovery"> | number
+    productName?: StringWithAggregatesFilter<"ProductDiscovery"> | string
+    brand?: StringWithAggregatesFilter<"ProductDiscovery"> | string
+    productKey?: StringWithAggregatesFilter<"ProductDiscovery"> | string
+    imageHash?: StringWithAggregatesFilter<"ProductDiscovery"> | string
+    review?: StringWithAggregatesFilter<"ProductDiscovery"> | string
+    rating?: IntNullableWithAggregatesFilter<"ProductDiscovery"> | number | null
+    discoveredOn?: StringWithAggregatesFilter<"ProductDiscovery"> | string
+    version?: IntWithAggregatesFilter<"ProductDiscovery"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"ProductDiscovery"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ProductDiscovery"> | Date | string
+  }
+
+  export type ProductDiscoveryImageWhereInput = {
+    AND?: ProductDiscoveryImageWhereInput | ProductDiscoveryImageWhereInput[]
+    OR?: ProductDiscoveryImageWhereInput[]
+    NOT?: ProductDiscoveryImageWhereInput | ProductDiscoveryImageWhereInput[]
+    discoveryId?: IntFilter<"ProductDiscoveryImage"> | number
+    bytes?: BytesFilter<"ProductDiscoveryImage"> | Bytes
+    thumbnail?: BytesFilter<"ProductDiscoveryImage"> | Bytes
+    discovery?: XOR<ProductDiscoveryScalarRelationFilter, ProductDiscoveryWhereInput>
+  }
+
+  export type ProductDiscoveryImageOrderByWithRelationInput = {
+    discoveryId?: SortOrder
+    bytes?: SortOrder
+    thumbnail?: SortOrder
+    discovery?: ProductDiscoveryOrderByWithRelationInput
+  }
+
+  export type ProductDiscoveryImageWhereUniqueInput = Prisma.AtLeast<{
+    discoveryId?: number
+    AND?: ProductDiscoveryImageWhereInput | ProductDiscoveryImageWhereInput[]
+    OR?: ProductDiscoveryImageWhereInput[]
+    NOT?: ProductDiscoveryImageWhereInput | ProductDiscoveryImageWhereInput[]
+    bytes?: BytesFilter<"ProductDiscoveryImage"> | Bytes
+    thumbnail?: BytesFilter<"ProductDiscoveryImage"> | Bytes
+    discovery?: XOR<ProductDiscoveryScalarRelationFilter, ProductDiscoveryWhereInput>
+  }, "discoveryId">
+
+  export type ProductDiscoveryImageOrderByWithAggregationInput = {
+    discoveryId?: SortOrder
+    bytes?: SortOrder
+    thumbnail?: SortOrder
+    _count?: ProductDiscoveryImageCountOrderByAggregateInput
+    _avg?: ProductDiscoveryImageAvgOrderByAggregateInput
+    _max?: ProductDiscoveryImageMaxOrderByAggregateInput
+    _min?: ProductDiscoveryImageMinOrderByAggregateInput
+    _sum?: ProductDiscoveryImageSumOrderByAggregateInput
+  }
+
+  export type ProductDiscoveryImageScalarWhereWithAggregatesInput = {
+    AND?: ProductDiscoveryImageScalarWhereWithAggregatesInput | ProductDiscoveryImageScalarWhereWithAggregatesInput[]
+    OR?: ProductDiscoveryImageScalarWhereWithAggregatesInput[]
+    NOT?: ProductDiscoveryImageScalarWhereWithAggregatesInput | ProductDiscoveryImageScalarWhereWithAggregatesInput[]
+    discoveryId?: IntWithAggregatesFilter<"ProductDiscoveryImage"> | number
+    bytes?: BytesWithAggregatesFilter<"ProductDiscoveryImage"> | Bytes
+    thumbnail?: BytesWithAggregatesFilter<"ProductDiscoveryImage"> | Bytes
+  }
+
   export type UserCreateInput = {
     name?: string | null
     email?: string | null
@@ -11940,6 +14353,7 @@ export namespace Prisma {
     username?: string | null
     usernameChangedAt?: Date | string | null
     createdAt?: Date | string
+    discoveries?: ProductDiscoveryCreateNestedManyWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     skincareLogs?: SkincareLogCreateNestedManyWithoutUserInput
     communityPosts?: CommunityPostCreateNestedManyWithoutUserInput
@@ -11959,6 +14373,7 @@ export namespace Prisma {
     username?: string | null
     usernameChangedAt?: Date | string | null
     createdAt?: Date | string
+    discoveries?: ProductDiscoveryUncheckedCreateNestedManyWithoutUserInput
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     skincareLogs?: SkincareLogUncheckedCreateNestedManyWithoutUserInput
     communityPosts?: CommunityPostUncheckedCreateNestedManyWithoutUserInput
@@ -11977,6 +14392,7 @@ export namespace Prisma {
     username?: NullableStringFieldUpdateOperationsInput | string | null
     usernameChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    discoveries?: ProductDiscoveryUpdateManyWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     skincareLogs?: SkincareLogUpdateManyWithoutUserNestedInput
     communityPosts?: CommunityPostUpdateManyWithoutUserNestedInput
@@ -11996,6 +14412,7 @@ export namespace Prisma {
     username?: NullableStringFieldUpdateOperationsInput | string | null
     usernameChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    discoveries?: ProductDiscoveryUncheckedUpdateManyWithoutUserNestedInput
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     skincareLogs?: SkincareLogUncheckedUpdateManyWithoutUserNestedInput
     communityPosts?: CommunityPostUncheckedUpdateManyWithoutUserNestedInput
@@ -12697,6 +15114,152 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ProductDiscoveryCreateInput = {
+    productName: string
+    brand: string
+    productKey: string
+    imageHash: string
+    review: string
+    rating?: number | null
+    discoveredOn: string
+    version?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutDiscoveriesInput
+    image?: ProductDiscoveryImageCreateNestedOneWithoutDiscoveryInput
+  }
+
+  export type ProductDiscoveryUncheckedCreateInput = {
+    id?: number
+    userId: number
+    productName: string
+    brand: string
+    productKey: string
+    imageHash: string
+    review: string
+    rating?: number | null
+    discoveredOn: string
+    version?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    image?: ProductDiscoveryImageUncheckedCreateNestedOneWithoutDiscoveryInput
+  }
+
+  export type ProductDiscoveryUpdateInput = {
+    productName?: StringFieldUpdateOperationsInput | string
+    brand?: StringFieldUpdateOperationsInput | string
+    productKey?: StringFieldUpdateOperationsInput | string
+    imageHash?: StringFieldUpdateOperationsInput | string
+    review?: StringFieldUpdateOperationsInput | string
+    rating?: NullableIntFieldUpdateOperationsInput | number | null
+    discoveredOn?: StringFieldUpdateOperationsInput | string
+    version?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutDiscoveriesNestedInput
+    image?: ProductDiscoveryImageUpdateOneWithoutDiscoveryNestedInput
+  }
+
+  export type ProductDiscoveryUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    userId?: IntFieldUpdateOperationsInput | number
+    productName?: StringFieldUpdateOperationsInput | string
+    brand?: StringFieldUpdateOperationsInput | string
+    productKey?: StringFieldUpdateOperationsInput | string
+    imageHash?: StringFieldUpdateOperationsInput | string
+    review?: StringFieldUpdateOperationsInput | string
+    rating?: NullableIntFieldUpdateOperationsInput | number | null
+    discoveredOn?: StringFieldUpdateOperationsInput | string
+    version?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    image?: ProductDiscoveryImageUncheckedUpdateOneWithoutDiscoveryNestedInput
+  }
+
+  export type ProductDiscoveryCreateManyInput = {
+    id?: number
+    userId: number
+    productName: string
+    brand: string
+    productKey: string
+    imageHash: string
+    review: string
+    rating?: number | null
+    discoveredOn: string
+    version?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ProductDiscoveryUpdateManyMutationInput = {
+    productName?: StringFieldUpdateOperationsInput | string
+    brand?: StringFieldUpdateOperationsInput | string
+    productKey?: StringFieldUpdateOperationsInput | string
+    imageHash?: StringFieldUpdateOperationsInput | string
+    review?: StringFieldUpdateOperationsInput | string
+    rating?: NullableIntFieldUpdateOperationsInput | number | null
+    discoveredOn?: StringFieldUpdateOperationsInput | string
+    version?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProductDiscoveryUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    userId?: IntFieldUpdateOperationsInput | number
+    productName?: StringFieldUpdateOperationsInput | string
+    brand?: StringFieldUpdateOperationsInput | string
+    productKey?: StringFieldUpdateOperationsInput | string
+    imageHash?: StringFieldUpdateOperationsInput | string
+    review?: StringFieldUpdateOperationsInput | string
+    rating?: NullableIntFieldUpdateOperationsInput | number | null
+    discoveredOn?: StringFieldUpdateOperationsInput | string
+    version?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProductDiscoveryImageCreateInput = {
+    bytes: Bytes
+    thumbnail: Bytes
+    discovery: ProductDiscoveryCreateNestedOneWithoutImageInput
+  }
+
+  export type ProductDiscoveryImageUncheckedCreateInput = {
+    discoveryId: number
+    bytes: Bytes
+    thumbnail: Bytes
+  }
+
+  export type ProductDiscoveryImageUpdateInput = {
+    bytes?: BytesFieldUpdateOperationsInput | Bytes
+    thumbnail?: BytesFieldUpdateOperationsInput | Bytes
+    discovery?: ProductDiscoveryUpdateOneRequiredWithoutImageNestedInput
+  }
+
+  export type ProductDiscoveryImageUncheckedUpdateInput = {
+    discoveryId?: IntFieldUpdateOperationsInput | number
+    bytes?: BytesFieldUpdateOperationsInput | Bytes
+    thumbnail?: BytesFieldUpdateOperationsInput | Bytes
+  }
+
+  export type ProductDiscoveryImageCreateManyInput = {
+    discoveryId: number
+    bytes: Bytes
+    thumbnail: Bytes
+  }
+
+  export type ProductDiscoveryImageUpdateManyMutationInput = {
+    bytes?: BytesFieldUpdateOperationsInput | Bytes
+    thumbnail?: BytesFieldUpdateOperationsInput | Bytes
+  }
+
+  export type ProductDiscoveryImageUncheckedUpdateManyInput = {
+    discoveryId?: IntFieldUpdateOperationsInput | number
+    bytes?: BytesFieldUpdateOperationsInput | Bytes
+    thumbnail?: BytesFieldUpdateOperationsInput | Bytes
+  }
+
   export type IntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[]
@@ -12750,6 +15313,12 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
+  export type ProductDiscoveryListRelationFilter = {
+    every?: ProductDiscoveryWhereInput
+    some?: ProductDiscoveryWhereInput
+    none?: ProductDiscoveryWhereInput
+  }
+
   export type ProfileNullableScalarRelationFilter = {
     is?: ProfileWhereInput | null
     isNot?: ProfileWhereInput | null
@@ -12782,6 +15351,10 @@ export namespace Prisma {
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
+  }
+
+  export type ProductDiscoveryOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type SkincareLogOrderByRelationAggregateInput = {
@@ -13448,6 +16021,168 @@ export namespace Prisma {
     receiverId?: SortOrder
   }
 
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type ProductDiscoveryImageNullableScalarRelationFilter = {
+    is?: ProductDiscoveryImageWhereInput | null
+    isNot?: ProductDiscoveryImageWhereInput | null
+  }
+
+  export type ProductDiscoveryOrderByRelevanceInput = {
+    fields: ProductDiscoveryOrderByRelevanceFieldEnum | ProductDiscoveryOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type ProductDiscoveryUserIdProductKeyCompoundUniqueInput = {
+    userId: number
+    productKey: string
+  }
+
+  export type ProductDiscoveryUserIdImageHashCompoundUniqueInput = {
+    userId: number
+    imageHash: string
+  }
+
+  export type ProductDiscoveryCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    productName?: SortOrder
+    brand?: SortOrder
+    productKey?: SortOrder
+    imageHash?: SortOrder
+    review?: SortOrder
+    rating?: SortOrder
+    discoveredOn?: SortOrder
+    version?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ProductDiscoveryAvgOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    rating?: SortOrder
+    version?: SortOrder
+  }
+
+  export type ProductDiscoveryMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    productName?: SortOrder
+    brand?: SortOrder
+    productKey?: SortOrder
+    imageHash?: SortOrder
+    review?: SortOrder
+    rating?: SortOrder
+    discoveredOn?: SortOrder
+    version?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ProductDiscoveryMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    productName?: SortOrder
+    brand?: SortOrder
+    productKey?: SortOrder
+    imageHash?: SortOrder
+    review?: SortOrder
+    rating?: SortOrder
+    discoveredOn?: SortOrder
+    version?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ProductDiscoverySumOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    rating?: SortOrder
+    version?: SortOrder
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type BytesFilter<$PrismaModel = never> = {
+    equals?: Bytes | BytesFieldRefInput<$PrismaModel>
+    in?: Bytes[]
+    notIn?: Bytes[]
+    not?: NestedBytesFilter<$PrismaModel> | Bytes
+  }
+
+  export type ProductDiscoveryScalarRelationFilter = {
+    is?: ProductDiscoveryWhereInput
+    isNot?: ProductDiscoveryWhereInput
+  }
+
+  export type ProductDiscoveryImageCountOrderByAggregateInput = {
+    discoveryId?: SortOrder
+    bytes?: SortOrder
+    thumbnail?: SortOrder
+  }
+
+  export type ProductDiscoveryImageAvgOrderByAggregateInput = {
+    discoveryId?: SortOrder
+  }
+
+  export type ProductDiscoveryImageMaxOrderByAggregateInput = {
+    discoveryId?: SortOrder
+    bytes?: SortOrder
+    thumbnail?: SortOrder
+  }
+
+  export type ProductDiscoveryImageMinOrderByAggregateInput = {
+    discoveryId?: SortOrder
+    bytes?: SortOrder
+    thumbnail?: SortOrder
+  }
+
+  export type ProductDiscoveryImageSumOrderByAggregateInput = {
+    discoveryId?: SortOrder
+  }
+
+  export type BytesWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Bytes | BytesFieldRefInput<$PrismaModel>
+    in?: Bytes[]
+    notIn?: Bytes[]
+    not?: NestedBytesWithAggregatesFilter<$PrismaModel> | Bytes
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBytesFilter<$PrismaModel>
+    _max?: NestedBytesFilter<$PrismaModel>
+  }
+
+  export type ProductDiscoveryCreateNestedManyWithoutUserInput = {
+    create?: XOR<ProductDiscoveryCreateWithoutUserInput, ProductDiscoveryUncheckedCreateWithoutUserInput> | ProductDiscoveryCreateWithoutUserInput[] | ProductDiscoveryUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ProductDiscoveryCreateOrConnectWithoutUserInput | ProductDiscoveryCreateOrConnectWithoutUserInput[]
+    createMany?: ProductDiscoveryCreateManyUserInputEnvelope
+    connect?: ProductDiscoveryWhereUniqueInput | ProductDiscoveryWhereUniqueInput[]
+  }
+
   export type ProfileCreateNestedOneWithoutUserInput = {
     create?: XOR<ProfileCreateWithoutUserInput, ProfileUncheckedCreateWithoutUserInput>
     connectOrCreate?: ProfileCreateOrConnectWithoutUserInput
@@ -13487,6 +16222,13 @@ export namespace Prisma {
     connectOrCreate?: FriendRequestCreateOrConnectWithoutReceiverInput | FriendRequestCreateOrConnectWithoutReceiverInput[]
     createMany?: FriendRequestCreateManyReceiverInputEnvelope
     connect?: FriendRequestWhereUniqueInput | FriendRequestWhereUniqueInput[]
+  }
+
+  export type ProductDiscoveryUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<ProductDiscoveryCreateWithoutUserInput, ProductDiscoveryUncheckedCreateWithoutUserInput> | ProductDiscoveryCreateWithoutUserInput[] | ProductDiscoveryUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ProductDiscoveryCreateOrConnectWithoutUserInput | ProductDiscoveryCreateOrConnectWithoutUserInput[]
+    createMany?: ProductDiscoveryCreateManyUserInputEnvelope
+    connect?: ProductDiscoveryWhereUniqueInput | ProductDiscoveryWhereUniqueInput[]
   }
 
   export type ProfileUncheckedCreateNestedOneWithoutUserInput = {
@@ -13544,6 +16286,20 @@ export namespace Prisma {
 
   export type DateTimeFieldUpdateOperationsInput = {
     set?: Date | string
+  }
+
+  export type ProductDiscoveryUpdateManyWithoutUserNestedInput = {
+    create?: XOR<ProductDiscoveryCreateWithoutUserInput, ProductDiscoveryUncheckedCreateWithoutUserInput> | ProductDiscoveryCreateWithoutUserInput[] | ProductDiscoveryUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ProductDiscoveryCreateOrConnectWithoutUserInput | ProductDiscoveryCreateOrConnectWithoutUserInput[]
+    upsert?: ProductDiscoveryUpsertWithWhereUniqueWithoutUserInput | ProductDiscoveryUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: ProductDiscoveryCreateManyUserInputEnvelope
+    set?: ProductDiscoveryWhereUniqueInput | ProductDiscoveryWhereUniqueInput[]
+    disconnect?: ProductDiscoveryWhereUniqueInput | ProductDiscoveryWhereUniqueInput[]
+    delete?: ProductDiscoveryWhereUniqueInput | ProductDiscoveryWhereUniqueInput[]
+    connect?: ProductDiscoveryWhereUniqueInput | ProductDiscoveryWhereUniqueInput[]
+    update?: ProductDiscoveryUpdateWithWhereUniqueWithoutUserInput | ProductDiscoveryUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: ProductDiscoveryUpdateManyWithWhereWithoutUserInput | ProductDiscoveryUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: ProductDiscoveryScalarWhereInput | ProductDiscoveryScalarWhereInput[]
   }
 
   export type ProfileUpdateOneWithoutUserNestedInput = {
@@ -13632,6 +16388,20 @@ export namespace Prisma {
     decrement?: number
     multiply?: number
     divide?: number
+  }
+
+  export type ProductDiscoveryUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<ProductDiscoveryCreateWithoutUserInput, ProductDiscoveryUncheckedCreateWithoutUserInput> | ProductDiscoveryCreateWithoutUserInput[] | ProductDiscoveryUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ProductDiscoveryCreateOrConnectWithoutUserInput | ProductDiscoveryCreateOrConnectWithoutUserInput[]
+    upsert?: ProductDiscoveryUpsertWithWhereUniqueWithoutUserInput | ProductDiscoveryUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: ProductDiscoveryCreateManyUserInputEnvelope
+    set?: ProductDiscoveryWhereUniqueInput | ProductDiscoveryWhereUniqueInput[]
+    disconnect?: ProductDiscoveryWhereUniqueInput | ProductDiscoveryWhereUniqueInput[]
+    delete?: ProductDiscoveryWhereUniqueInput | ProductDiscoveryWhereUniqueInput[]
+    connect?: ProductDiscoveryWhereUniqueInput | ProductDiscoveryWhereUniqueInput[]
+    update?: ProductDiscoveryUpdateWithWhereUniqueWithoutUserInput | ProductDiscoveryUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: ProductDiscoveryUpdateManyWithWhereWithoutUserInput | ProductDiscoveryUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: ProductDiscoveryScalarWhereInput | ProductDiscoveryScalarWhereInput[]
   }
 
   export type ProfileUncheckedUpdateOneWithoutUserNestedInput = {
@@ -13912,6 +16682,78 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutReceivedRequestsInput, UserUpdateWithoutReceivedRequestsInput>, UserUncheckedUpdateWithoutReceivedRequestsInput>
   }
 
+  export type UserCreateNestedOneWithoutDiscoveriesInput = {
+    create?: XOR<UserCreateWithoutDiscoveriesInput, UserUncheckedCreateWithoutDiscoveriesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutDiscoveriesInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type ProductDiscoveryImageCreateNestedOneWithoutDiscoveryInput = {
+    create?: XOR<ProductDiscoveryImageCreateWithoutDiscoveryInput, ProductDiscoveryImageUncheckedCreateWithoutDiscoveryInput>
+    connectOrCreate?: ProductDiscoveryImageCreateOrConnectWithoutDiscoveryInput
+    connect?: ProductDiscoveryImageWhereUniqueInput
+  }
+
+  export type ProductDiscoveryImageUncheckedCreateNestedOneWithoutDiscoveryInput = {
+    create?: XOR<ProductDiscoveryImageCreateWithoutDiscoveryInput, ProductDiscoveryImageUncheckedCreateWithoutDiscoveryInput>
+    connectOrCreate?: ProductDiscoveryImageCreateOrConnectWithoutDiscoveryInput
+    connect?: ProductDiscoveryImageWhereUniqueInput
+  }
+
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type UserUpdateOneRequiredWithoutDiscoveriesNestedInput = {
+    create?: XOR<UserCreateWithoutDiscoveriesInput, UserUncheckedCreateWithoutDiscoveriesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutDiscoveriesInput
+    upsert?: UserUpsertWithoutDiscoveriesInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutDiscoveriesInput, UserUpdateWithoutDiscoveriesInput>, UserUncheckedUpdateWithoutDiscoveriesInput>
+  }
+
+  export type ProductDiscoveryImageUpdateOneWithoutDiscoveryNestedInput = {
+    create?: XOR<ProductDiscoveryImageCreateWithoutDiscoveryInput, ProductDiscoveryImageUncheckedCreateWithoutDiscoveryInput>
+    connectOrCreate?: ProductDiscoveryImageCreateOrConnectWithoutDiscoveryInput
+    upsert?: ProductDiscoveryImageUpsertWithoutDiscoveryInput
+    disconnect?: ProductDiscoveryImageWhereInput | boolean
+    delete?: ProductDiscoveryImageWhereInput | boolean
+    connect?: ProductDiscoveryImageWhereUniqueInput
+    update?: XOR<XOR<ProductDiscoveryImageUpdateToOneWithWhereWithoutDiscoveryInput, ProductDiscoveryImageUpdateWithoutDiscoveryInput>, ProductDiscoveryImageUncheckedUpdateWithoutDiscoveryInput>
+  }
+
+  export type ProductDiscoveryImageUncheckedUpdateOneWithoutDiscoveryNestedInput = {
+    create?: XOR<ProductDiscoveryImageCreateWithoutDiscoveryInput, ProductDiscoveryImageUncheckedCreateWithoutDiscoveryInput>
+    connectOrCreate?: ProductDiscoveryImageCreateOrConnectWithoutDiscoveryInput
+    upsert?: ProductDiscoveryImageUpsertWithoutDiscoveryInput
+    disconnect?: ProductDiscoveryImageWhereInput | boolean
+    delete?: ProductDiscoveryImageWhereInput | boolean
+    connect?: ProductDiscoveryImageWhereUniqueInput
+    update?: XOR<XOR<ProductDiscoveryImageUpdateToOneWithWhereWithoutDiscoveryInput, ProductDiscoveryImageUpdateWithoutDiscoveryInput>, ProductDiscoveryImageUncheckedUpdateWithoutDiscoveryInput>
+  }
+
+  export type ProductDiscoveryCreateNestedOneWithoutImageInput = {
+    create?: XOR<ProductDiscoveryCreateWithoutImageInput, ProductDiscoveryUncheckedCreateWithoutImageInput>
+    connectOrCreate?: ProductDiscoveryCreateOrConnectWithoutImageInput
+    connect?: ProductDiscoveryWhereUniqueInput
+  }
+
+  export type BytesFieldUpdateOperationsInput = {
+    set?: Bytes
+  }
+
+  export type ProductDiscoveryUpdateOneRequiredWithoutImageNestedInput = {
+    create?: XOR<ProductDiscoveryCreateWithoutImageInput, ProductDiscoveryUncheckedCreateWithoutImageInput>
+    connectOrCreate?: ProductDiscoveryCreateOrConnectWithoutImageInput
+    upsert?: ProductDiscoveryUpsertWithoutImageInput
+    connect?: ProductDiscoveryWhereUniqueInput
+    update?: XOR<XOR<ProductDiscoveryUpdateToOneWithWhereWithoutImageInput, ProductDiscoveryUpdateWithoutImageInput>, ProductDiscoveryUncheckedUpdateWithoutImageInput>
+  }
+
   export type NestedIntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[]
@@ -14106,6 +16948,89 @@ export namespace Prisma {
     _max?: NestedFloatFilter<$PrismaModel>
   }
 
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedBytesFilter<$PrismaModel = never> = {
+    equals?: Bytes | BytesFieldRefInput<$PrismaModel>
+    in?: Bytes[]
+    notIn?: Bytes[]
+    not?: NestedBytesFilter<$PrismaModel> | Bytes
+  }
+
+  export type NestedBytesWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Bytes | BytesFieldRefInput<$PrismaModel>
+    in?: Bytes[]
+    notIn?: Bytes[]
+    not?: NestedBytesWithAggregatesFilter<$PrismaModel> | Bytes
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBytesFilter<$PrismaModel>
+    _max?: NestedBytesFilter<$PrismaModel>
+  }
+
+  export type ProductDiscoveryCreateWithoutUserInput = {
+    productName: string
+    brand: string
+    productKey: string
+    imageHash: string
+    review: string
+    rating?: number | null
+    discoveredOn: string
+    version?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    image?: ProductDiscoveryImageCreateNestedOneWithoutDiscoveryInput
+  }
+
+  export type ProductDiscoveryUncheckedCreateWithoutUserInput = {
+    id?: number
+    productName: string
+    brand: string
+    productKey: string
+    imageHash: string
+    review: string
+    rating?: number | null
+    discoveredOn: string
+    version?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    image?: ProductDiscoveryImageUncheckedCreateNestedOneWithoutDiscoveryInput
+  }
+
+  export type ProductDiscoveryCreateOrConnectWithoutUserInput = {
+    where: ProductDiscoveryWhereUniqueInput
+    create: XOR<ProductDiscoveryCreateWithoutUserInput, ProductDiscoveryUncheckedCreateWithoutUserInput>
+  }
+
+  export type ProductDiscoveryCreateManyUserInputEnvelope = {
+    data: ProductDiscoveryCreateManyUserInput | ProductDiscoveryCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
   export type ProfileCreateWithoutUserInput = {
     age: number
     gender: string
@@ -14273,6 +17198,40 @@ export namespace Prisma {
   export type FriendRequestCreateManyReceiverInputEnvelope = {
     data: FriendRequestCreateManyReceiverInput | FriendRequestCreateManyReceiverInput[]
     skipDuplicates?: boolean
+  }
+
+  export type ProductDiscoveryUpsertWithWhereUniqueWithoutUserInput = {
+    where: ProductDiscoveryWhereUniqueInput
+    update: XOR<ProductDiscoveryUpdateWithoutUserInput, ProductDiscoveryUncheckedUpdateWithoutUserInput>
+    create: XOR<ProductDiscoveryCreateWithoutUserInput, ProductDiscoveryUncheckedCreateWithoutUserInput>
+  }
+
+  export type ProductDiscoveryUpdateWithWhereUniqueWithoutUserInput = {
+    where: ProductDiscoveryWhereUniqueInput
+    data: XOR<ProductDiscoveryUpdateWithoutUserInput, ProductDiscoveryUncheckedUpdateWithoutUserInput>
+  }
+
+  export type ProductDiscoveryUpdateManyWithWhereWithoutUserInput = {
+    where: ProductDiscoveryScalarWhereInput
+    data: XOR<ProductDiscoveryUpdateManyMutationInput, ProductDiscoveryUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type ProductDiscoveryScalarWhereInput = {
+    AND?: ProductDiscoveryScalarWhereInput | ProductDiscoveryScalarWhereInput[]
+    OR?: ProductDiscoveryScalarWhereInput[]
+    NOT?: ProductDiscoveryScalarWhereInput | ProductDiscoveryScalarWhereInput[]
+    id?: IntFilter<"ProductDiscovery"> | number
+    userId?: IntFilter<"ProductDiscovery"> | number
+    productName?: StringFilter<"ProductDiscovery"> | string
+    brand?: StringFilter<"ProductDiscovery"> | string
+    productKey?: StringFilter<"ProductDiscovery"> | string
+    imageHash?: StringFilter<"ProductDiscovery"> | string
+    review?: StringFilter<"ProductDiscovery"> | string
+    rating?: IntNullableFilter<"ProductDiscovery"> | number | null
+    discoveredOn?: StringFilter<"ProductDiscovery"> | string
+    version?: IntFilter<"ProductDiscovery"> | number
+    createdAt?: DateTimeFilter<"ProductDiscovery"> | Date | string
+    updatedAt?: DateTimeFilter<"ProductDiscovery"> | Date | string
   }
 
   export type ProfileUpsertWithoutUserInput = {
@@ -14456,6 +17415,7 @@ export namespace Prisma {
     username?: string | null
     usernameChangedAt?: Date | string | null
     createdAt?: Date | string
+    discoveries?: ProductDiscoveryCreateNestedManyWithoutUserInput
     skincareLogs?: SkincareLogCreateNestedManyWithoutUserInput
     communityPosts?: CommunityPostCreateNestedManyWithoutUserInput
     communityAnswers?: CommunityAnswerCreateNestedManyWithoutUserInput
@@ -14474,6 +17434,7 @@ export namespace Prisma {
     username?: string | null
     usernameChangedAt?: Date | string | null
     createdAt?: Date | string
+    discoveries?: ProductDiscoveryUncheckedCreateNestedManyWithoutUserInput
     skincareLogs?: SkincareLogUncheckedCreateNestedManyWithoutUserInput
     communityPosts?: CommunityPostUncheckedCreateNestedManyWithoutUserInput
     communityAnswers?: CommunityAnswerUncheckedCreateNestedManyWithoutUserInput
@@ -14533,6 +17494,7 @@ export namespace Prisma {
     username?: NullableStringFieldUpdateOperationsInput | string | null
     usernameChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    discoveries?: ProductDiscoveryUpdateManyWithoutUserNestedInput
     skincareLogs?: SkincareLogUpdateManyWithoutUserNestedInput
     communityPosts?: CommunityPostUpdateManyWithoutUserNestedInput
     communityAnswers?: CommunityAnswerUpdateManyWithoutUserNestedInput
@@ -14551,6 +17513,7 @@ export namespace Prisma {
     username?: NullableStringFieldUpdateOperationsInput | string | null
     usernameChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    discoveries?: ProductDiscoveryUncheckedUpdateManyWithoutUserNestedInput
     skincareLogs?: SkincareLogUncheckedUpdateManyWithoutUserNestedInput
     communityPosts?: CommunityPostUncheckedUpdateManyWithoutUserNestedInput
     communityAnswers?: CommunityAnswerUncheckedUpdateManyWithoutUserNestedInput
@@ -14670,6 +17633,7 @@ export namespace Prisma {
     username?: string | null
     usernameChangedAt?: Date | string | null
     createdAt?: Date | string
+    discoveries?: ProductDiscoveryCreateNestedManyWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     communityPosts?: CommunityPostCreateNestedManyWithoutUserInput
     communityAnswers?: CommunityAnswerCreateNestedManyWithoutUserInput
@@ -14688,6 +17652,7 @@ export namespace Prisma {
     username?: string | null
     usernameChangedAt?: Date | string | null
     createdAt?: Date | string
+    discoveries?: ProductDiscoveryUncheckedCreateNestedManyWithoutUserInput
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     communityPosts?: CommunityPostUncheckedCreateNestedManyWithoutUserInput
     communityAnswers?: CommunityAnswerUncheckedCreateNestedManyWithoutUserInput
@@ -14721,6 +17686,7 @@ export namespace Prisma {
     username?: NullableStringFieldUpdateOperationsInput | string | null
     usernameChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    discoveries?: ProductDiscoveryUpdateManyWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     communityPosts?: CommunityPostUpdateManyWithoutUserNestedInput
     communityAnswers?: CommunityAnswerUpdateManyWithoutUserNestedInput
@@ -14739,6 +17705,7 @@ export namespace Prisma {
     username?: NullableStringFieldUpdateOperationsInput | string | null
     usernameChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    discoveries?: ProductDiscoveryUncheckedUpdateManyWithoutUserNestedInput
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     communityPosts?: CommunityPostUncheckedUpdateManyWithoutUserNestedInput
     communityAnswers?: CommunityAnswerUncheckedUpdateManyWithoutUserNestedInput
@@ -14756,6 +17723,7 @@ export namespace Prisma {
     username?: string | null
     usernameChangedAt?: Date | string | null
     createdAt?: Date | string
+    discoveries?: ProductDiscoveryCreateNestedManyWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     skincareLogs?: SkincareLogCreateNestedManyWithoutUserInput
     communityAnswers?: CommunityAnswerCreateNestedManyWithoutUserInput
@@ -14774,6 +17742,7 @@ export namespace Prisma {
     username?: string | null
     usernameChangedAt?: Date | string | null
     createdAt?: Date | string
+    discoveries?: ProductDiscoveryUncheckedCreateNestedManyWithoutUserInput
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     skincareLogs?: SkincareLogUncheckedCreateNestedManyWithoutUserInput
     communityAnswers?: CommunityAnswerUncheckedCreateNestedManyWithoutUserInput
@@ -14834,6 +17803,7 @@ export namespace Prisma {
     username?: NullableStringFieldUpdateOperationsInput | string | null
     usernameChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    discoveries?: ProductDiscoveryUpdateManyWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     skincareLogs?: SkincareLogUpdateManyWithoutUserNestedInput
     communityAnswers?: CommunityAnswerUpdateManyWithoutUserNestedInput
@@ -14852,6 +17822,7 @@ export namespace Prisma {
     username?: NullableStringFieldUpdateOperationsInput | string | null
     usernameChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    discoveries?: ProductDiscoveryUncheckedUpdateManyWithoutUserNestedInput
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     skincareLogs?: SkincareLogUncheckedUpdateManyWithoutUserNestedInput
     communityAnswers?: CommunityAnswerUncheckedUpdateManyWithoutUserNestedInput
@@ -14913,6 +17884,7 @@ export namespace Prisma {
     username?: string | null
     usernameChangedAt?: Date | string | null
     createdAt?: Date | string
+    discoveries?: ProductDiscoveryCreateNestedManyWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     skincareLogs?: SkincareLogCreateNestedManyWithoutUserInput
     communityPosts?: CommunityPostCreateNestedManyWithoutUserInput
@@ -14931,6 +17903,7 @@ export namespace Prisma {
     username?: string | null
     usernameChangedAt?: Date | string | null
     createdAt?: Date | string
+    discoveries?: ProductDiscoveryUncheckedCreateNestedManyWithoutUserInput
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     skincareLogs?: SkincareLogUncheckedCreateNestedManyWithoutUserInput
     communityPosts?: CommunityPostUncheckedCreateNestedManyWithoutUserInput
@@ -14998,6 +17971,7 @@ export namespace Prisma {
     username?: NullableStringFieldUpdateOperationsInput | string | null
     usernameChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    discoveries?: ProductDiscoveryUpdateManyWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     skincareLogs?: SkincareLogUpdateManyWithoutUserNestedInput
     communityPosts?: CommunityPostUpdateManyWithoutUserNestedInput
@@ -15016,6 +17990,7 @@ export namespace Prisma {
     username?: NullableStringFieldUpdateOperationsInput | string | null
     usernameChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    discoveries?: ProductDiscoveryUncheckedUpdateManyWithoutUserNestedInput
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     skincareLogs?: SkincareLogUncheckedUpdateManyWithoutUserNestedInput
     communityPosts?: CommunityPostUncheckedUpdateManyWithoutUserNestedInput
@@ -15033,6 +18008,7 @@ export namespace Prisma {
     username?: string | null
     usernameChangedAt?: Date | string | null
     createdAt?: Date | string
+    discoveries?: ProductDiscoveryCreateNestedManyWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     skincareLogs?: SkincareLogCreateNestedManyWithoutUserInput
     communityPosts?: CommunityPostCreateNestedManyWithoutUserInput
@@ -15051,6 +18027,7 @@ export namespace Prisma {
     username?: string | null
     usernameChangedAt?: Date | string | null
     createdAt?: Date | string
+    discoveries?: ProductDiscoveryUncheckedCreateNestedManyWithoutUserInput
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     skincareLogs?: SkincareLogUncheckedCreateNestedManyWithoutUserInput
     communityPosts?: CommunityPostUncheckedCreateNestedManyWithoutUserInput
@@ -15073,6 +18050,7 @@ export namespace Prisma {
     username?: string | null
     usernameChangedAt?: Date | string | null
     createdAt?: Date | string
+    discoveries?: ProductDiscoveryCreateNestedManyWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     skincareLogs?: SkincareLogCreateNestedManyWithoutUserInput
     communityPosts?: CommunityPostCreateNestedManyWithoutUserInput
@@ -15091,6 +18069,7 @@ export namespace Prisma {
     username?: string | null
     usernameChangedAt?: Date | string | null
     createdAt?: Date | string
+    discoveries?: ProductDiscoveryUncheckedCreateNestedManyWithoutUserInput
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     skincareLogs?: SkincareLogUncheckedCreateNestedManyWithoutUserInput
     communityPosts?: CommunityPostUncheckedCreateNestedManyWithoutUserInput
@@ -15124,6 +18103,7 @@ export namespace Prisma {
     username?: NullableStringFieldUpdateOperationsInput | string | null
     usernameChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    discoveries?: ProductDiscoveryUpdateManyWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     skincareLogs?: SkincareLogUpdateManyWithoutUserNestedInput
     communityPosts?: CommunityPostUpdateManyWithoutUserNestedInput
@@ -15142,6 +18122,7 @@ export namespace Prisma {
     username?: NullableStringFieldUpdateOperationsInput | string | null
     usernameChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    discoveries?: ProductDiscoveryUncheckedUpdateManyWithoutUserNestedInput
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     skincareLogs?: SkincareLogUncheckedUpdateManyWithoutUserNestedInput
     communityPosts?: CommunityPostUncheckedUpdateManyWithoutUserNestedInput
@@ -15170,6 +18151,7 @@ export namespace Prisma {
     username?: NullableStringFieldUpdateOperationsInput | string | null
     usernameChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    discoveries?: ProductDiscoveryUpdateManyWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     skincareLogs?: SkincareLogUpdateManyWithoutUserNestedInput
     communityPosts?: CommunityPostUpdateManyWithoutUserNestedInput
@@ -15188,11 +18170,226 @@ export namespace Prisma {
     username?: NullableStringFieldUpdateOperationsInput | string | null
     usernameChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    discoveries?: ProductDiscoveryUncheckedUpdateManyWithoutUserNestedInput
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     skincareLogs?: SkincareLogUncheckedUpdateManyWithoutUserNestedInput
     communityPosts?: CommunityPostUncheckedUpdateManyWithoutUserNestedInput
     communityAnswers?: CommunityAnswerUncheckedUpdateManyWithoutUserNestedInput
     sentRequests?: FriendRequestUncheckedUpdateManyWithoutSenderNestedInput
+  }
+
+  export type UserCreateWithoutDiscoveriesInput = {
+    name?: string | null
+    email?: string | null
+    password?: string | null
+    googleId?: string | null
+    phoneNumber?: string | null
+    isNewUser?: boolean
+    username?: string | null
+    usernameChangedAt?: Date | string | null
+    createdAt?: Date | string
+    profile?: ProfileCreateNestedOneWithoutUserInput
+    skincareLogs?: SkincareLogCreateNestedManyWithoutUserInput
+    communityPosts?: CommunityPostCreateNestedManyWithoutUserInput
+    communityAnswers?: CommunityAnswerCreateNestedManyWithoutUserInput
+    sentRequests?: FriendRequestCreateNestedManyWithoutSenderInput
+    receivedRequests?: FriendRequestCreateNestedManyWithoutReceiverInput
+  }
+
+  export type UserUncheckedCreateWithoutDiscoveriesInput = {
+    id?: number
+    name?: string | null
+    email?: string | null
+    password?: string | null
+    googleId?: string | null
+    phoneNumber?: string | null
+    isNewUser?: boolean
+    username?: string | null
+    usernameChangedAt?: Date | string | null
+    createdAt?: Date | string
+    profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
+    skincareLogs?: SkincareLogUncheckedCreateNestedManyWithoutUserInput
+    communityPosts?: CommunityPostUncheckedCreateNestedManyWithoutUserInput
+    communityAnswers?: CommunityAnswerUncheckedCreateNestedManyWithoutUserInput
+    sentRequests?: FriendRequestUncheckedCreateNestedManyWithoutSenderInput
+    receivedRequests?: FriendRequestUncheckedCreateNestedManyWithoutReceiverInput
+  }
+
+  export type UserCreateOrConnectWithoutDiscoveriesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutDiscoveriesInput, UserUncheckedCreateWithoutDiscoveriesInput>
+  }
+
+  export type ProductDiscoveryImageCreateWithoutDiscoveryInput = {
+    bytes: Bytes
+    thumbnail: Bytes
+  }
+
+  export type ProductDiscoveryImageUncheckedCreateWithoutDiscoveryInput = {
+    bytes: Bytes
+    thumbnail: Bytes
+  }
+
+  export type ProductDiscoveryImageCreateOrConnectWithoutDiscoveryInput = {
+    where: ProductDiscoveryImageWhereUniqueInput
+    create: XOR<ProductDiscoveryImageCreateWithoutDiscoveryInput, ProductDiscoveryImageUncheckedCreateWithoutDiscoveryInput>
+  }
+
+  export type UserUpsertWithoutDiscoveriesInput = {
+    update: XOR<UserUpdateWithoutDiscoveriesInput, UserUncheckedUpdateWithoutDiscoveriesInput>
+    create: XOR<UserCreateWithoutDiscoveriesInput, UserUncheckedCreateWithoutDiscoveriesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutDiscoveriesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutDiscoveriesInput, UserUncheckedUpdateWithoutDiscoveriesInput>
+  }
+
+  export type UserUpdateWithoutDiscoveriesInput = {
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    googleId?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isNewUser?: BoolFieldUpdateOperationsInput | boolean
+    username?: NullableStringFieldUpdateOperationsInput | string | null
+    usernameChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    profile?: ProfileUpdateOneWithoutUserNestedInput
+    skincareLogs?: SkincareLogUpdateManyWithoutUserNestedInput
+    communityPosts?: CommunityPostUpdateManyWithoutUserNestedInput
+    communityAnswers?: CommunityAnswerUpdateManyWithoutUserNestedInput
+    sentRequests?: FriendRequestUpdateManyWithoutSenderNestedInput
+    receivedRequests?: FriendRequestUpdateManyWithoutReceiverNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutDiscoveriesInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    googleId?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isNewUser?: BoolFieldUpdateOperationsInput | boolean
+    username?: NullableStringFieldUpdateOperationsInput | string | null
+    usernameChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
+    skincareLogs?: SkincareLogUncheckedUpdateManyWithoutUserNestedInput
+    communityPosts?: CommunityPostUncheckedUpdateManyWithoutUserNestedInput
+    communityAnswers?: CommunityAnswerUncheckedUpdateManyWithoutUserNestedInput
+    sentRequests?: FriendRequestUncheckedUpdateManyWithoutSenderNestedInput
+    receivedRequests?: FriendRequestUncheckedUpdateManyWithoutReceiverNestedInput
+  }
+
+  export type ProductDiscoveryImageUpsertWithoutDiscoveryInput = {
+    update: XOR<ProductDiscoveryImageUpdateWithoutDiscoveryInput, ProductDiscoveryImageUncheckedUpdateWithoutDiscoveryInput>
+    create: XOR<ProductDiscoveryImageCreateWithoutDiscoveryInput, ProductDiscoveryImageUncheckedCreateWithoutDiscoveryInput>
+    where?: ProductDiscoveryImageWhereInput
+  }
+
+  export type ProductDiscoveryImageUpdateToOneWithWhereWithoutDiscoveryInput = {
+    where?: ProductDiscoveryImageWhereInput
+    data: XOR<ProductDiscoveryImageUpdateWithoutDiscoveryInput, ProductDiscoveryImageUncheckedUpdateWithoutDiscoveryInput>
+  }
+
+  export type ProductDiscoveryImageUpdateWithoutDiscoveryInput = {
+    bytes?: BytesFieldUpdateOperationsInput | Bytes
+    thumbnail?: BytesFieldUpdateOperationsInput | Bytes
+  }
+
+  export type ProductDiscoveryImageUncheckedUpdateWithoutDiscoveryInput = {
+    bytes?: BytesFieldUpdateOperationsInput | Bytes
+    thumbnail?: BytesFieldUpdateOperationsInput | Bytes
+  }
+
+  export type ProductDiscoveryCreateWithoutImageInput = {
+    productName: string
+    brand: string
+    productKey: string
+    imageHash: string
+    review: string
+    rating?: number | null
+    discoveredOn: string
+    version?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutDiscoveriesInput
+  }
+
+  export type ProductDiscoveryUncheckedCreateWithoutImageInput = {
+    id?: number
+    userId: number
+    productName: string
+    brand: string
+    productKey: string
+    imageHash: string
+    review: string
+    rating?: number | null
+    discoveredOn: string
+    version?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ProductDiscoveryCreateOrConnectWithoutImageInput = {
+    where: ProductDiscoveryWhereUniqueInput
+    create: XOR<ProductDiscoveryCreateWithoutImageInput, ProductDiscoveryUncheckedCreateWithoutImageInput>
+  }
+
+  export type ProductDiscoveryUpsertWithoutImageInput = {
+    update: XOR<ProductDiscoveryUpdateWithoutImageInput, ProductDiscoveryUncheckedUpdateWithoutImageInput>
+    create: XOR<ProductDiscoveryCreateWithoutImageInput, ProductDiscoveryUncheckedCreateWithoutImageInput>
+    where?: ProductDiscoveryWhereInput
+  }
+
+  export type ProductDiscoveryUpdateToOneWithWhereWithoutImageInput = {
+    where?: ProductDiscoveryWhereInput
+    data: XOR<ProductDiscoveryUpdateWithoutImageInput, ProductDiscoveryUncheckedUpdateWithoutImageInput>
+  }
+
+  export type ProductDiscoveryUpdateWithoutImageInput = {
+    productName?: StringFieldUpdateOperationsInput | string
+    brand?: StringFieldUpdateOperationsInput | string
+    productKey?: StringFieldUpdateOperationsInput | string
+    imageHash?: StringFieldUpdateOperationsInput | string
+    review?: StringFieldUpdateOperationsInput | string
+    rating?: NullableIntFieldUpdateOperationsInput | number | null
+    discoveredOn?: StringFieldUpdateOperationsInput | string
+    version?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutDiscoveriesNestedInput
+  }
+
+  export type ProductDiscoveryUncheckedUpdateWithoutImageInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    userId?: IntFieldUpdateOperationsInput | number
+    productName?: StringFieldUpdateOperationsInput | string
+    brand?: StringFieldUpdateOperationsInput | string
+    productKey?: StringFieldUpdateOperationsInput | string
+    imageHash?: StringFieldUpdateOperationsInput | string
+    review?: StringFieldUpdateOperationsInput | string
+    rating?: NullableIntFieldUpdateOperationsInput | number | null
+    discoveredOn?: StringFieldUpdateOperationsInput | string
+    version?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProductDiscoveryCreateManyUserInput = {
+    id?: number
+    productName: string
+    brand: string
+    productKey: string
+    imageHash: string
+    review: string
+    rating?: number | null
+    discoveredOn: string
+    version?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type SkincareLogCreateManyUserInput = {
@@ -15238,6 +18435,49 @@ export namespace Prisma {
     status?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+  }
+
+  export type ProductDiscoveryUpdateWithoutUserInput = {
+    productName?: StringFieldUpdateOperationsInput | string
+    brand?: StringFieldUpdateOperationsInput | string
+    productKey?: StringFieldUpdateOperationsInput | string
+    imageHash?: StringFieldUpdateOperationsInput | string
+    review?: StringFieldUpdateOperationsInput | string
+    rating?: NullableIntFieldUpdateOperationsInput | number | null
+    discoveredOn?: StringFieldUpdateOperationsInput | string
+    version?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    image?: ProductDiscoveryImageUpdateOneWithoutDiscoveryNestedInput
+  }
+
+  export type ProductDiscoveryUncheckedUpdateWithoutUserInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    productName?: StringFieldUpdateOperationsInput | string
+    brand?: StringFieldUpdateOperationsInput | string
+    productKey?: StringFieldUpdateOperationsInput | string
+    imageHash?: StringFieldUpdateOperationsInput | string
+    review?: StringFieldUpdateOperationsInput | string
+    rating?: NullableIntFieldUpdateOperationsInput | number | null
+    discoveredOn?: StringFieldUpdateOperationsInput | string
+    version?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    image?: ProductDiscoveryImageUncheckedUpdateOneWithoutDiscoveryNestedInput
+  }
+
+  export type ProductDiscoveryUncheckedUpdateManyWithoutUserInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    productName?: StringFieldUpdateOperationsInput | string
+    brand?: StringFieldUpdateOperationsInput | string
+    productKey?: StringFieldUpdateOperationsInput | string
+    imageHash?: StringFieldUpdateOperationsInput | string
+    review?: StringFieldUpdateOperationsInput | string
+    rating?: NullableIntFieldUpdateOperationsInput | number | null
+    discoveredOn?: StringFieldUpdateOperationsInput | string
+    version?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type SkincareLogUpdateWithoutUserInput = {

@@ -62,6 +62,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/recommendations', recommendationRoutes);
 app.use('/api/logs', skincareLogRoutes);
+app.use('/api/discoveries', require('./routes/discoveryRoutes'));
 app.use('/api', ingredientRoutes);
 app.use('/api/community', communityRoutes);
 app.use('/api', friendRoutes);
