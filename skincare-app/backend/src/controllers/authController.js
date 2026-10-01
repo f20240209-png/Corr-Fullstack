@@ -1,14 +1,34 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { PrismaClient } = require('../../prisma/generated/prisma/index.js');
+const prisma = require('../services/prisma');
 const admin = require('../services/firebaseAdmin');
 
-const prisma = new PrismaClient();
+
+const firebaseVerificationError = (res, error) => {
+  console.error('Firebase verification failed:', error.code || 'unknown');
+  if (['auth/invalid-credential', 'app/invalid-credential', 'auth/internal-error'].includes(error.code)) {
+    return res.status(503).json({
+      message: 'Google/phone sign-in is temporarily unavailable. Please contact the app owner.',
+      code: 'FIREBASE_CONFIGURATION_ERROR',
+    });
+  }
+  return res.status(401).json({
+    message: error.code === 'auth/id-token-expired'
+      ? 'Your Google/phone sign-in expired. Please try signing in again.'
+      : 'Unable to verify your Google/phone sign-in. Please try again.',
+    code: 'INVALID_FIREBASE_TOKEN',
+  });
+};
 
 // ── REGISTER (email/password) ────────────────────────────────
 const register = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, password } = req.body;
+    const email = typeof req.body.email === 'string' ? req.body.email.trim().toLowerCase() : '';
+    if (typeof name !== 'string' || !name.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ||
+        typeof password !== 'string' || password.length < 8 || Buffer.byteLength(password, 'utf8') > 72) {
+      return res.status(400).json({ message: 'Provide a name, valid email, and a password of at least 8 characters (at most 72 bytes).' });
+    }
 
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) {
@@ -17,7 +37,7 @@ const register = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await prisma.user.create({
-      data: { name, email, password: hashedPassword }
+      data: { name: name.trim(), email, password: hashedPassword }
     });
 
     const token = jwt.sign(
@@ -39,16 +59,20 @@ const register = async (req, res) => {
 // ── LOGIN (email/password) ───────────────────────────────────
 const login = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { password } = req.body;
+    const email = typeof req.body.email === 'string' ? req.body.email.trim().toLowerCase() : '';
+    if (!email || typeof password !== 'string' || !password) {
+      return res.status(400).json({ message: 'Email and password are required.' });
+    }
 
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user || !user.password) {
-      return res.status(400).json({ message: 'Invalid email or password' });
+      return res.status(401).json({ message: 'Invalid email or password. If you registered with Google or phone, use that sign-in method.' });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({ message: 'Invalid email or password' });
+      return res.status(401).json({ message: 'Invalid email or password. If you registered with Google or phone, use that sign-in method.' });
     }
 
     const token = jwt.sign(
@@ -79,17 +103,16 @@ const googleLogin = async (req, res) => {
     let decodedToken;
     try {
       decodedToken = await admin.auth().verifyIdToken(idToken);
-      console.log('Google token verified! Email:', decodedToken.email);
+
     } catch (verifyError) {
-      console.log('Google verify error:', verifyError.code, verifyError.message);
-      return res.status(401).json({
-        message: 'Invalid Google token',
-        error: verifyError.message,
-        code: verifyError.code
-      });
+      return firebaseVerificationError(res, verifyError);
     }
 
-    const { uid: googleId, email, name } = decodedToken;
+    if (decodedToken.firebase?.sign_in_provider !== 'google.com' || !decodedToken.email_verified || !decodedToken.email) {
+      return res.status(401).json({ message: 'A verified Google sign-in is required.' });
+    }
+    const { uid: googleId, name } = decodedToken;
+    const email = decodedToken.email.trim().toLowerCase();
 
     let user = await prisma.user.findFirst({
       where: { OR: [{ googleId }, { email }] }
@@ -144,27 +167,24 @@ const firebaseLogin = async (req, res) => {
     try {
       decodedToken = await admin.auth().verifyIdToken(idToken);
     } catch (verifyError) {
-      return res.status(401).json({
-        message: 'Invalid token',
-        error: verifyError.message
-      });
+      return firebaseVerificationError(res, verifyError);
     }
 
-    if (!decodedToken.email_verified) {
+    if (!decodedToken.email || !decodedToken.email_verified) {
       return res.status(401).json({
         message: 'Email not verified. Please check your inbox.'
       });
     }
 
     let user = await prisma.user.findUnique({
-      where: { email: decodedToken.email }
+      where: { email: decodedToken.email.trim().toLowerCase() }
     });
 
     if (!user) {
       user = await prisma.user.create({
         data: {
           name: name || decodedToken.name || decodedToken.email.split('@')[0],
-          email: decodedToken.email,
+          email: decodedToken.email.trim().toLowerCase(),
           password: null,
           googleId: decodedToken.uid,
         }
@@ -202,11 +222,7 @@ const phoneLogin = async (req, res) => {
     try {
       decodedToken = await admin.auth().verifyIdToken(idToken);
     } catch (verifyError) {
-      console.log('Phone verify error:', verifyError.code, verifyError.message);
-      return res.status(401).json({
-        message: 'Invalid token',
-        error: verifyError.message
-      });
+      return firebaseVerificationError(res, verifyError);
     }
 
     const phoneNumber = decodedToken.phone_number;
@@ -264,4 +280,17 @@ const phoneLogin = async (req, res) => {
   }
 };
 
-module.exports = { register, login, googleLogin, firebaseLogin, phoneLogin };
+const getSession = async (req, res) => {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: req.userId },
+      select: { id: true, name: true, email: true, phoneNumber: true },
+    });
+    if (!user) return res.status(401).json({ message: 'Please sign in again.', code: 'INVALID_TOKEN' });
+    res.json({ user });
+  } catch (error) {
+    res.status(503).json({ message: 'Unable to check your session. Please try again.' });
+  }
+};
+
+module.exports = { register, login, googleLogin, firebaseLogin, phoneLogin, getSession };

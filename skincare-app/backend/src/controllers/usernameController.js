@@ -1,15 +1,14 @@
-const { PrismaClient } = require('../../prisma/generated/prisma/index.js');
-const prisma = new PrismaClient();
+const prisma = require('../services/prisma');
 
 // GET /api/profile/check-username?username=xxx
 const checkUsername = async (req, res) => {
   try {
     const { username } = req.query;
 
-    if (!username || username.trim().length < 3) {
+    if (typeof username !== 'string' || !/^[a-zA-Z0-9_.]{3,30}$/.test(username.trim())) {
       return res.status(400).json({
         available: false,
-        message: 'Username must be at least 3 characters.',
+        message: 'Use 3–30 letters, numbers, underscores or dots.',
       });
     }
 
@@ -24,9 +23,9 @@ const checkUsername = async (req, res) => {
     const existing = await prisma.user.findUnique({ where: { username: clean } });
 
     res.json({
-      available: !existing,
+      available: !existing || existing.id === req.userId,
       username:  clean,
-      message:   existing ? 'Username already taken.' : 'Username available!',
+      message:   existing && existing.id !== req.userId ? 'Username already taken.' : 'Username available!',
     });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
@@ -39,13 +38,16 @@ const setUsername = async (req, res) => {
     const myId = req.userId;
     const { username } = req.body;
 
-    if (!username || username.trim().length < 3) {
-      return res.status(400).json({ message: 'Username must be at least 3 characters.' });
+    if (typeof username !== 'string' || !/^[a-zA-Z0-9_.]{3,30}$/.test(username.trim())) {
+      return res.status(400).json({ message: 'Use 3–30 letters, numbers, underscores or dots.' });
     }
 
     const clean = username.trim().toLowerCase().replace(/[^a-z0-9_.]/g, '');
 
     const me = await prisma.user.findUnique({ where: { id: myId } });
+
+    if (!me) return res.status(401).json({ message: 'Please sign in again.' });
+    if (me.username === clean) return res.json({ message: 'Username set successfully!', username: clean });
 
     // Block if already changed once
     if (me?.usernameChangedAt !== null && me?.username !== null) {

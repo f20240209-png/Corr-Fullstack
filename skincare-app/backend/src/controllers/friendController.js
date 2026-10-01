@@ -1,5 +1,4 @@
-const { PrismaClient } = require('../../prisma/generated/prisma/index.js');
-const prisma = new PrismaClient();
+const prisma = require('../services/prisma');
 
 // GET /api/users/search?username=xxx
 const searchUsers = async (req, res) => {

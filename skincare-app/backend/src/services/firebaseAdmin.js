@@ -10,8 +10,6 @@ if (!admin.apps.length) {
     privateKey = privateKey.replace(/\\n/g, '\n');
   }
 
-  console.log('Firebase init - Project:', process.env.FIREBASE_PROJECT_ID);
-  console.log('Firebase init - Key starts with:', privateKey?.substring(0, 30));
 
   admin.initializeApp({
     credential: admin.credential.cert({

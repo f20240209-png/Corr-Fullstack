@@ -4,7 +4,11 @@
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
-    "dev": "nodemon src/index.js"
+    "dev": "nodemon src/index.js",
+    "test": "node --test test/*.test.js",
+    "generate": "prisma generate --schema prisma/schema.prisma",
+    "postinstall": "prisma generate --schema prisma/schema.prisma",
+    "prepare-db": "node scripts/prepare-database.js"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.39.0",
@@ -20,7 +24,8 @@
     "jsonwebtoken": "^9.0.2",
     "prisma": "^6.8.2",
     "ts-node": "^10.9.2",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "multer": "^2.1.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"

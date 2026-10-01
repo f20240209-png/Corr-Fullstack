@@ -1,13 +1,29 @@
-const { PrismaClient } = require('../../prisma/generated/prisma/index.js');
-const prisma = new PrismaClient();
+const prisma = require('../services/prisma');
+
+const validProfile = (body) => {
+  const { age, gender, skinType, skinGoals, budget, currentProducts, currentRoutine } = body;
+  return Number.isInteger(age) && age > 0 && age <= 120 &&
+    typeof gender === 'string' && gender.length > 0 && gender.length <= 30 &&
+    ['oily', 'dry', 'combination', 'sensitive', 'normal'].includes(skinType) &&
+    Array.isArray(skinGoals) && skinGoals.length > 0 && skinGoals.length <= 20 &&
+    skinGoals.every(g => typeof g === 'string' && g.length <= 100) &&
+    Number.isFinite(budget) && budget >= 0 &&
+    (currentProducts == null || (Array.isArray(currentProducts) && currentProducts.length <= 50 &&
+      currentProducts.every(p => typeof p === 'string' && p.length <= 200) && JSON.stringify(currentProducts).length <= 10000)) &&
+    (currentRoutine == null || (typeof currentRoutine === 'string' && currentRoutine.length <= 10000));
+};
 
 // ─── Create / Update Profile (upsert) ─────────────────────────────────────
 const createProfile = async (req, res) => {
   try {
     const { age, gender, skinType, skinGoals, budget, currentProducts, currentRoutine } = req.body;
     const userId = req.userId;
+    if (!validProfile(req.body)) {
+      return res.status(400).json({ message: 'Provide a valid age, skin type, goals and non-negative budget. Keep routine notes and the combined product names under 10,000 characters.' });
+    }
 
-    const profile = await prisma.profile.upsert({
+    const profile = await prisma.$transaction(async (tx) => {
+      const saved = await tx.profile.upsert({
       where: { userId },
       update: {
         age, gender, skinType,
@@ -23,6 +39,9 @@ const createProfile = async (req, res) => {
         currentProducts: currentProducts ? JSON.stringify(currentProducts) : '[]',
         currentRoutine:  currentRoutine || null,
       },
+      });
+      await tx.recommendation.deleteMany({ where: { profileId: saved.id } });
+      return saved;
     });
 
     res.status(201).json({
@@ -71,8 +90,12 @@ const updateProfile = async (req, res) => {
   try {
     const { age, gender, skinType, skinGoals, budget, currentProducts, currentRoutine } = req.body;
     const userId = req.userId;
+    if (!validProfile(req.body)) {
+      return res.status(400).json({ message: 'Provide a valid age, skin type, goals and non-negative budget. Keep routine notes and the combined product names under 10,000 characters.' });
+    }
 
-    const profile = await prisma.profile.upsert({
+    const profile = await prisma.$transaction(async (tx) => {
+      const saved = await tx.profile.upsert({
       where: { userId },
       update: {
         age, gender, skinType,
@@ -88,6 +111,9 @@ const updateProfile = async (req, res) => {
         currentProducts: currentProducts ? JSON.stringify(currentProducts) : '[]',
         currentRoutine:  currentRoutine || null,
       },
+      });
+      await tx.recommendation.deleteMany({ where: { profileId: saved.id } });
+      return saved;
     });
 
     res.json({

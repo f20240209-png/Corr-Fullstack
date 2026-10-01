@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 require('dotenv').config();
+if (!process.env.JWT_SECRET) throw new Error('Set a stable JWT_SECRET before starting Corr.');
 
 const authRoutes = require('./routes/authRoutes');
 const profileRoutes = require('./routes/profileRoutes');
@@ -29,13 +30,13 @@ app.use(cors({
       return callback(null, true);
     }
 
-    // Allow any netlify.app subdomain (covers preview deploys + mobile)
-    if (origin.endsWith('.netlify.app')) {
+    // Additional explicitly configured frontend origins
+    if ((process.env.CORS_ORIGINS || '').split(',').map(s => s.trim()).includes(origin)) {
       return callback(null, true);
     }
 
     // Allow any localhost port (covers flutter dev on any port)
-    if (origin.startsWith('http://localhost')) {
+    if (/^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)) {
       return callback(null, true);
     }
 

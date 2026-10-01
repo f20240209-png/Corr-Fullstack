@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { register, login, googleLogin, firebaseLogin, phoneLogin } = require('../controllers/authController');
+const { register, login, googleLogin, firebaseLogin, phoneLogin, getSession } = require('../controllers/authController');
+
+router.get('/session', require('../middleware/authMiddleware').protect, getSession);
 
 router.post('/register', register);
 router.post('/login', login);
