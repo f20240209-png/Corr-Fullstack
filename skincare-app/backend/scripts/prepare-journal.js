@@ -14,6 +14,12 @@ async function main() {
     if (statement.startsWith('ALTER TABLE') && columns.length) continue;
     await prisma.$executeRawUnsafe(statement);
   }
+  const songColumn = await prisma.$queryRawUnsafe("SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'JournalEntry' AND COLUMN_NAME = 'spotifyTrackId'");
+  if (!songColumn.length) {
+    const songSql = fs.readFileSync(path.join(__dirname, '../prisma/migrations/20261002130000_journal_spotify/migration.sql'), 'utf8');
+    await prisma.$executeRawUnsafe(songSql.trim().replace(/;\s*$/, ''));
+  }
+  console.log('Corr journal Spotify songs are ready.');
   console.log('Corr collection and private journal preparation complete. Existing records retained.');
 }
-main().catch(() => { console.error('Journal preparation failed. Check database permissions and schema. No data reset was attempted.'); process.exitCode = 1; }).finally(() => prisma.$disconnect());
+main().catch(error => { console.error('Journal preparation failed:', error.code || error.name); console.error('Check database permissions and schema. No data reset was attempted.'); process.exitCode = 1; }).finally(() => prisma.$disconnect());

@@ -5,6 +5,57 @@ import 'package:http/testing.dart';
 import 'package:skincare_flutter/services/api_service.dart';
 
 void main() {
+  test(
+    'journal songs send authenticated multipart fields and reload persisted values',
+    () async {
+      const song = 'https://open.spotify.com/track/4uLU6hMCjMI75M1A2tKUQC';
+      var writes = 0;
+      ApiService.client = MockClient((request) async {
+        expect(request.headers['Authorization'], 'Bearer token');
+        if (request.method == 'PUT') {
+          writes++;
+          expect(request.body, contains('name="spotifyUrl"'));
+          expect(
+            request.body,
+            writes == 1 ? contains(song) : isNot(contains(song)),
+          );
+          return http.Response(
+            '{"entry":{"spotifyUrl":${writes == 1 ? '"$song"' : 'null'},"version":$writes}}',
+            200,
+          );
+        }
+        return http.Response(
+          '{"entry":{"spotifyUrl":"$song","spotifyTrackId":"4uLU6hMCjMI75M1A2tKUQC","version":1}}',
+          200,
+        );
+      });
+      expect(
+        (await ApiService.saveJournalEntry('token', '2026-10-02', {
+          'title': '',
+          'body': '',
+          'version': '0',
+          'spotifyUrl': song,
+        }))['entry']['spotifyUrl'],
+        song,
+      );
+      expect(
+        (await ApiService.getJournalEntry(
+          'token',
+          '2026-10-02',
+        ))['entry']['spotifyUrl'],
+        song,
+      );
+      expect(
+        (await ApiService.saveJournalEntry('token', '2026-10-02', {
+          'title': '',
+          'body': 'Keep the writing.',
+          'version': '1',
+          'spotifyUrl': '',
+        }))['entry']['spotifyUrl'],
+        isNull,
+      );
+    },
+  );
   tearDown(() {
     ApiService.client.close();
     ApiService.client = http.Client();

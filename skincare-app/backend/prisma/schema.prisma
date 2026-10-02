@@ -177,6 +177,7 @@ model JournalEntry {
   entryDate String   @db.Char(10)
   title     String   @db.VarChar(120)
   body      String   @db.Text
+  spotifyTrackId String? @db.VarChar(22)
   version   Int      @default(1)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

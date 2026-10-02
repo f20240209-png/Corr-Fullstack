@@ -1,11 +1,13 @@
 const prisma = require('../services/prisma');
 const { prepareDiscoveryImage } = require('../services/discoveryImage');
 const { problem, journalDate, journalMonth, journalVersion, journalText } = require('../services/journalData');
-const fields = { id: true, entryDate: true, title: true, body: true, version: true, createdAt: true, updatedAt: true, image: { select: { entryId: true } } };
+const fields = { id: true, entryDate: true, title: true, body: true, spotifyTrackId: true, version: true, createdAt: true, updatedAt: true, image: { select: { entryId: true } } };
 const decorate = entry => {
   if (!entry) return null;
   const { image, ...data } = entry;
-  return { ...data, hasPhoto: Boolean(image), photoPath: image ? `/journal/${entry.entryDate}/photo?v=${entry.version}` : null };
+  const spotifyTrackId = entry.spotifyTrackId ?? null;
+  return { ...data, spotifyTrackId, spotifyUrl: spotifyTrackId ? `https://open.spotify.com/track/${spotifyTrackId}` : null,
+    hasPhoto: Boolean(image), photoPath: image ? `/journal/${entry.entryDate}/photo?v=${entry.version}` : null };
 };
 function report(res, error) {
   if (error.code === 'P2002') return res.status(409).json({ message: 'A page was just saved for this date. Reload the saved page before editing.' });
@@ -43,7 +45,8 @@ async function saveJournal(req, res) {
       const owned = await tx.journalEntry.findFirst({ where: { userId: req.userId, entryDate }, select: fields });
       if ((owned?.version ?? 0) !== version) throw problem(409, 'This page changed in another tab. Reload the saved page before editing. Your draft is still here.');
       const hasPhoto = Boolean(image || (!removePhoto && owned?.image));
-      if (!data.title && !data.body.trim() && !hasPhoto) throw problem(400, 'Write a little or add a photo before saving this page.');
+      const hasSong = Boolean(Object.hasOwn(data, 'spotifyTrackId') ? data.spotifyTrackId : owned?.spotifyTrackId);
+      if (!data.title && !data.body.trim() && !hasPhoto && !hasSong) throw problem(400, 'Write a little, add a photo or choose a song before saving this page.');
       if (!owned) return tx.journalEntry.create({ data: { userId: req.userId, entryDate, ...data, ...(image ? { image: { create: { bytes: image.bytes, thumbnail: image.thumbnail } } } : {}) }, select: fields });
       const changed = await tx.journalEntry.updateMany({ where: { id: owned.id, userId: req.userId, version }, data: { ...data, version: { increment: 1 } } });
       if (!changed.count) throw problem(409, 'This page changed. Reload it before saving. Your draft is still here.');

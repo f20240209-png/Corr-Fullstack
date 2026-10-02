@@ -2,11 +2,14 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:pointer_interceptor/pointer_interceptor.dart';
 import '../providers/auth_provider.dart';
 import '../services/api_service.dart';
 import '../models/journal_dates.dart';
+import '../models/journal_song.dart';
 import '../theme/app_theme.dart';
 import '../widgets/journal_widgets.dart';
+import '../widgets/journal_song_card.dart';
 import '../widgets/routine_step_card.dart';
 
 class JournalScreen extends StatefulWidget {
@@ -27,8 +30,10 @@ class _JournalScreenState extends State<JournalScreen> {
       _removePhoto = false,
       _conflict = false;
   bool _leaveDialog = false;
+  bool _choosingSong = false;
   Uint8List? _photo;
-  String? _photoPath, _error, _monthError;
+  String? _photoPath, _error, _monthError, _spotifyTrackId;
+  bool get _busy => _saving || _picking || _choosingSong;
   String get _token =>
       context.read<AuthProvider>().token ??
       (throw const ApiException('Please sign in again.'));
@@ -65,6 +70,8 @@ class _JournalScreenState extends State<JournalScreen> {
     _applying = false;
     _version = (entry?['version'] as num?)?.toInt() ?? 0;
     _photoPath = entry?['photoPath'] as String?;
+    final trackId = entry?['spotifyTrackId'] as String?;
+    _spotifyTrackId = isSpotifyTrackId(trackId) ? trackId : null;
     _photo = null;
     _removePhoto = false;
     _dirty = false;
@@ -119,26 +126,28 @@ class _JournalScreenState extends State<JournalScreen> {
   }
 
   Future<bool> _canLeave() async {
-    if (_saving || _picking || _leaveDialog) return false;
+    if (_busy || _leaveDialog) return false;
     if (!_dirty) return true;
     _leaveDialog = true;
     final discard = await showDialog<bool>(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: const Text('Keep writing this page?'),
-        content: const Text(
-          'You have unsaved changes. Save this page first, or discard the draft to continue.',
+      builder: (dialogContext) => PointerInterceptor(
+        child: AlertDialog(
+          title: const Text('Keep writing this page?'),
+          content: const Text(
+            'You have unsaved changes. Save this page first, or discard the draft to continue.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext, false),
+              child: const Text('Keep writing'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext, true),
+              child: const Text('Discard draft'),
+            ),
+          ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext, false),
-            child: const Text('Keep writing'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext, true),
-            child: const Text('Discard draft'),
-          ),
-        ],
       ),
     );
     _leaveDialog = false;
@@ -160,18 +169,20 @@ class _JournalScreenState extends State<JournalScreen> {
       _version = 0;
       _photo = null;
       _photoPath = null;
+      _spotifyTrackId = null;
       _conflict = false;
     });
     await Future.wait([_load(), _loadMonth()]);
   }
 
   Future<void> _chooseDate() async {
-    if (_saving || _picking) return;
+    if (_busy) return;
     final date = await showDatePicker(
       context: context,
       initialDate: _date,
       firstDate: DateTime(1900),
       lastDate: DateTime(2100, 12, 31),
+      builder: (_, child) => PointerInterceptor(child: child!),
     );
     if (mounted && date != null) await _selectDate(date);
   }
@@ -189,7 +200,7 @@ class _JournalScreenState extends State<JournalScreen> {
   }
 
   Future<void> _pick(ImageSource source) async {
-    if (_saving || _picking) return;
+    if (_busy) return;
     setState(() => _picking = true);
     try {
       final file = await ImagePicker().pickImage(
@@ -224,14 +235,36 @@ class _JournalScreenState extends State<JournalScreen> {
     }
   }
 
+  Future<void> _chooseSong() async {
+    if (_loading || _busy) return;
+    final date = _key;
+    setState(() => _choosingSong = true);
+    try {
+      final id = await showDialog<String>(
+        context: context,
+        builder: (_) => JournalSongDialog(trackId: _spotifyTrackId),
+      );
+      if (mounted && date == _key && id != null && id != _spotifyTrackId) {
+        setState(() {
+          _spotifyTrackId = id;
+          _dirty = true;
+        });
+      }
+    } finally {
+      if (mounted) setState(() => _choosingSong = false);
+    }
+  }
+
   Future<void> _save() async {
-    if (_loading || _saving || _picking || !_dirty) return;
+    if (_loading || _busy || !_dirty) return;
     if (_title.text.trim().isEmpty &&
         _body.text.trim().isEmpty &&
         _photo == null &&
-        (_photoPath == null || _removePhoto)) {
+        (_photoPath == null || _removePhoto) &&
+        _spotifyTrackId == null) {
       setState(
-        () => _error = 'Write a little or add a photo before saving this page.',
+        () => _error =
+            'Write a little, add a photo or choose a song before saving this page.',
       );
       return;
     }
@@ -245,6 +278,9 @@ class _JournalScreenState extends State<JournalScreen> {
         'body': _body.text,
         'version': '$_version',
         'removePhoto': '$_removePhoto',
+        'spotifyUrl': _spotifyTrackId == null
+            ? ''
+            : spotifyTrackUrl(_spotifyTrackId!),
       }, photo: _photo);
       if (data['entry'] is! Map)
         throw const ApiException(
@@ -268,24 +304,26 @@ class _JournalScreenState extends State<JournalScreen> {
   }
 
   Future<void> _delete() async {
-    if (_saving || _picking || _version == 0) return;
+    if (_busy || _version == 0) return;
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: const Text('Delete this journal page?'),
-        content: const Text(
-          'The writing and saved photo for this date will be removed.',
+      builder: (dialogContext) => PointerInterceptor(
+        child: AlertDialog(
+          title: const Text('Delete this journal page?'),
+          content: const Text(
+            'The writing, saved photo and song for this date will be removed.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext, false),
+              child: const Text('Keep page'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext, true),
+              child: const Text('Delete page'),
+            ),
+          ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext, false),
-            child: const Text('Keep page'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext, true),
-            child: const Text('Delete page'),
-          ),
-        ],
       ),
     );
     if (!mounted || confirmed != true) return;
@@ -313,7 +351,7 @@ class _JournalScreenState extends State<JournalScreen> {
 
   @override
   Widget build(BuildContext context) => PopScope(
-    canPop: !_dirty && !_saving && !_picking,
+    canPop: !_dirty && !_busy,
     onPopInvokedWithResult: (didPop, result) async {
       if (didPop) return;
       if (await _canLeave() && context.mounted) {
@@ -383,15 +421,13 @@ class _JournalScreenState extends State<JournalScreen> {
                       IconButton(
                         tooltip: 'Previous day',
                         onPressed:
-                            _saving ||
-                                _picking ||
-                                !validJournalDay(nextJournalDay(_date, -1))
+                            _busy || !validJournalDay(nextJournalDay(_date, -1))
                             ? null
                             : () => _selectDate(nextJournalDay(_date, -1)),
                         icon: const Icon(Icons.chevron_left_rounded),
                       ),
                       OutlinedButton.icon(
-                        onPressed: _saving || _picking ? null : _chooseDate,
+                        onPressed: _busy ? null : _chooseDate,
                         icon: const Icon(
                           Icons.calendar_today_outlined,
                           size: 17,
@@ -401,9 +437,7 @@ class _JournalScreenState extends State<JournalScreen> {
                       IconButton(
                         tooltip: 'Next day',
                         onPressed:
-                            _saving ||
-                                _picking ||
-                                !validJournalDay(nextJournalDay(_date, 1))
+                            _busy || !validJournalDay(nextJournalDay(_date, 1))
                             ? null
                             : () => _selectDate(nextJournalDay(_date, 1)),
                         icon: const Icon(Icons.chevron_right_rounded),
@@ -411,7 +445,7 @@ class _JournalScreenState extends State<JournalScreen> {
                       if (journalDateKey(_date) !=
                           journalDateKey(DateTime.now()))
                         TextButton(
-                          onPressed: _saving || _picking
+                          onPressed: _busy
                               ? null
                               : () => _selectDate(DateTime.now()),
                           child: const Text('Today'),
@@ -530,7 +564,7 @@ class _JournalScreenState extends State<JournalScreen> {
           ],
         ),
       );
-    final locked = _saving || _picking;
+    final locked = _busy;
     final photo = _photo != null
         ? Image.memory(
             _photo!,
@@ -703,6 +737,16 @@ class _JournalScreenState extends State<JournalScreen> {
                     ),
                 ],
               ),
+            ),
+            const SizedBox(height: 20),
+            JournalSongCard(
+              trackId: _spotifyTrackId,
+              enabled: !locked,
+              onChoose: _chooseSong,
+              onRemove: () => setState(() {
+                _spotifyTrackId = null;
+                _dirty = true;
+              }),
             ),
             if (_error != null) ...[
               const SizedBox(height: 16),
