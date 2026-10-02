@@ -9,7 +9,8 @@
     "generate": "prisma generate --schema prisma/schema.prisma",
     "postinstall": "prisma generate --schema prisma/schema.prisma",
     "prepare-db": "node scripts/prepare-database.js",
-    "prepare-discoveries": "node scripts/prepare-discoveries.js"
+    "prepare-discoveries": "node scripts/prepare-discoveries.js",
+    "prepare-journal": "node scripts/prepare-journal.js"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.39.0",

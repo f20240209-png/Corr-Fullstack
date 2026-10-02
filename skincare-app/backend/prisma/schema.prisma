@@ -21,6 +21,7 @@ model User {
   usernameChangedAt DateTime?                 //  (null = never changed)
   createdAt        DateTime          @default(now())
   discoveries      ProductDiscovery[]
+  journalEntries   JournalEntry[]
   profile          Profile?
   skincareLogs     SkincareLog[]
   communityPosts   CommunityPost[]
@@ -146,6 +147,7 @@ model ProductDiscovery {
   user         User     @relation(fields: [userId], references: [id])
   productName  String   @db.VarChar(120)
   brand        String   @db.VarChar(80)
+  productType  String   @default("other") @db.VarChar(30)
   productKey   String   @db.Char(64)
   imageHash    String   @db.Char(64)
   review       String   @db.Text
@@ -166,4 +168,26 @@ model ProductDiscoveryImage {
   discovery   ProductDiscovery @relation(fields: [discoveryId], references: [id], onDelete: Cascade)
   bytes       Bytes    @db.MediumBlob
   thumbnail   Bytes    @db.MediumBlob
+}
+
+model JournalEntry {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  entryDate String   @db.Char(10)
+  title     String   @db.VarChar(120)
+  body      String   @db.Text
+  version   Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  image     JournalEntryImage?
+
+  @@unique([userId, entryDate])
+}
+
+model JournalEntryImage {
+  entryId   Int      @id
+  entry     JournalEntry @relation(fields: [entryId], references: [id], onDelete: Cascade)
+  bytes     Bytes    @db.MediumBlob
+  thumbnail Bytes    @db.MediumBlob
 }

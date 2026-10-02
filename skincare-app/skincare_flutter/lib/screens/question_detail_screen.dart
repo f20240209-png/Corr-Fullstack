@@ -1,26 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import '../services/api_service.dart';
 import '../models/community_post_model.dart';
+import '../theme/app_theme.dart';
+import '../widgets/community_widgets.dart';
+import '../widgets/routine_step_card.dart';
 
 class QuestionDetailScreen extends StatefulWidget {
   final int postId;
   const QuestionDetailScreen({super.key, required this.postId});
-
   @override
   State<QuestionDetailScreen> createState() => _QuestionDetailScreenState();
 }
 
 class _QuestionDetailScreenState extends State<QuestionDetailScreen> {
-  static const Color _pink = Color(0xFFE91E8C);
-
   CommunityPostDetail? _post;
-  bool _isLoading      = true;
-  bool _isSubmitting   = false;
-  bool _isAnonymous    = true;
-
-  final _answerController = TextEditingController();
+  bool _loading = true,
+      _submitting = false,
+      _anonymous = true,
+      _reacting = false;
+  String? _error, _answerError;
+  int _request = 0;
+  final _answer = TextEditingController();
+  final _replyKey = GlobalKey();
 
   @override
   void initState() {
@@ -30,358 +34,320 @@ class _QuestionDetailScreenState extends State<QuestionDetailScreen> {
 
   @override
   void dispose() {
-    _answerController.dispose();
+    _answer.dispose();
     super.dispose();
   }
 
-  Future<void> _fetchPost() async {
-    setState(() => _isLoading = true);
+  String get _token =>
+      context.read<AuthProvider>().token ??
+      (throw const ApiException('Please sign in again.'));
+
+  Future<void> _fetchPost({bool showLoading = true}) async {
+    if (!mounted) return;
+    final request = ++_request;
+    setState(() {
+      if (showLoading && _post == null) _loading = true;
+      _error = null;
+    });
     try {
-      final token = context.read<AuthProvider>().token!;
-      final data  = await ApiService.getPostById(token, widget.postId);
-      setState(() => _post = CommunityPostDetail.fromJson(data));
-    } catch (_) {} finally {
-      setState(() => _isLoading = false);
+      final data = await ApiService.getPostById(_token, widget.postId);
+      final post = CommunityPostDetail.fromJson(data);
+      if (mounted && request == _request) setState(() => _post = post);
+    } catch (e) {
+      if (mounted && request == _request) setState(() => _error = e.toString());
+    } finally {
+      if (mounted && request == _request) setState(() => _loading = false);
     }
   }
 
   Future<void> _submitAnswer() async {
-    final ans = _answerController.text.trim();
-    if (ans.length < 5) {
-      _showSnack('Answer must be at least 5 characters.', isError: true);
+    if (_submitting) return;
+    final text = _answer.text.trim();
+    if (text.length < 5) {
+      setState(() => _answerError = 'Write at least 5 characters.');
       return;
     }
-
-    setState(() => _isSubmitting = true);
+    setState(() {
+      _submitting = true;
+      _answerError = null;
+    });
     try {
-      final token = context.read<AuthProvider>().token!;
-      final data  = await ApiService.answerPost(
-        token,
+      final data = await ApiService.answerPost(
+        _token,
         widget.postId,
-        answer:      ans,
-        isAnonymous: _isAnonymous,
+        answer: text,
+        isAnonymous: _anonymous,
       );
-
-      if (data['message'] != null && data['answer'] != null) {
-        _answerController.clear();
-        _showSnack('Answer posted!');
-        await _fetchPost();
-      } else {
-        _showSnack(data['message'] ?? 'Failed to post.', isError: true);
-      }
-    } catch (_) {
-      _showSnack('Something went wrong.', isError: true);
+      if (data['answer'] == null)
+        throw const ApiException('Could not post your reply. Please retry.');
+      if (!mounted) return;
+      _answer.clear();
+      FocusScope.of(context).unfocus();
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Your reply is posted.')));
+      await _fetchPost(showLoading: false);
+    } catch (e) {
+      if (mounted) setState(() => _answerError = e.toString());
     } finally {
-      if (mounted) setState(() => _isSubmitting = false);
+      if (mounted) setState(() => _submitting = false);
     }
   }
 
-  Future<void> _likePost() async {
+  Future<void> _react({int? answerId}) async {
+    if (_reacting) return;
+    setState(() => _reacting = true);
     try {
-      final token = context.read<AuthProvider>().token!;
-      await ApiService.likePost(token, widget.postId);
-      await _fetchPost();
-    } catch (_) {}
-  }
-
-  Future<void> _markHelpful(int answerId) async {
-    try {
-      final token = context.read<AuthProvider>().token!;
-      await ApiService.markAnswerHelpful(token, answerId);
-      await _fetchPost();
-    } catch (_) {}
-  }
-
-  void _showSnack(String msg, {bool isError = false}) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(msg),
-      backgroundColor: isError ? Colors.red.shade600 : Colors.green.shade600,
-      behavior: SnackBarBehavior.floating,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-    ));
+      if (answerId == null) {
+        await ApiService.likePost(_token, widget.postId);
+      } else {
+        await ApiService.markAnswerHelpful(_token, answerId);
+      }
+      if (mounted) await _fetchPost(showLoading: false);
+    } catch (e) {
+      if (mounted)
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(e.toString())));
+    } finally {
+      if (mounted) setState(() => _reacting = false);
+    }
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFFFF0F5),
+  Widget build(BuildContext context) => PopScope(
+    canPop: !_submitting,
+    child: Scaffold(
+      backgroundColor: AppTheme.background,
       appBar: AppBar(
-        backgroundColor: _pink,
-        foregroundColor: Colors.white,
-        title: const Text('Question',
-            style: TextStyle(fontWeight: FontWeight.bold)),
+        backgroundColor: AppTheme.background,
+        title: const Text('Conversation'),
+        actions: [
+          IconButton(
+            tooltip: 'Write a reply',
+            icon: const Icon(Icons.edit_note_rounded),
+            onPressed: _post == null
+                ? null
+                : () {
+                    final target = _replyKey.currentContext;
+                    if (target != null)
+                      Scrollable.ensureVisible(
+                        target,
+                        duration: const Duration(milliseconds: 250),
+                        alignment: 0.1,
+                      );
+                  },
+          ),
+          const SizedBox(width: 8),
+        ],
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator(color: _pink))
-          : _post == null
-              ? const Center(child: Text('Could not load question.'))
-              : Column(
+      body: _loading
+          ? const Center(child: CircularProgressIndicator())
+          : SafeArea(
+              top: false,
+              child: RefreshIndicator(
+                onRefresh: () => _fetchPost(showLoading: false),
+                child: ListView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: const EdgeInsets.fromLTRB(18, 12, 18, 32),
                   children: [
-                    Expanded(
-                      child: SingleChildScrollView(
-                        padding: const EdgeInsets.all(16),
+                    Center(
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 840),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            _buildQuestionCard(),
-                            const SizedBox(height: 20),
-                            Text(
-                              '${_post!.answers.length} Answer${_post!.answers.length != 1 ? 's' : ''}',
-                              style: const TextStyle(
-                                  fontSize: 15, fontWeight: FontWeight.bold),
-                            ),
-                            const SizedBox(height: 10),
-                            if (_post!.answers.isEmpty)
-                              _emptyAnswers()
-                            else
-                              ..._post!.answers
-                                  .map((a) => _buildAnswerCard(a)),
+                            if (_error != null) ...[
+                              CommunityStateCard(
+                                icon: Icons.cloud_off_outlined,
+                                title: _post == null
+                                    ? 'Could not load this conversation'
+                                    : 'Could not refresh replies',
+                                message: _error!,
+                                onAction: () => _fetchPost(showLoading: false),
+                              ),
+                              const SizedBox(height: 18),
+                            ],
+                            if (_post != null) ...[
+                              _questionCard(),
+                              const SizedBox(height: 22),
+                              Text(
+                                '${_post!.answers.length} ${_post!.answers.length == 1 ? 'reply' : 'replies'}',
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              if (_post!.answers.isEmpty)
+                                const CommunityStateCard(
+                                  icon: Icons.chat_bubble_outline_rounded,
+                                  title: 'Be the first to share',
+                                  message:
+                                      'Have a similar experience? Your reply could help someone find their next small step.',
+                                )
+                              else
+                                ..._post!.answers.map(_answerCard),
+                              const SizedBox(height: 22),
+                              Container(key: _replyKey, child: _answerInput()),
+                            ],
                           ],
                         ),
                       ),
                     ),
-                    _buildAnswerInput(),
                   ],
                 ),
-    );
-  }
+              ),
+            ),
+    ),
+  );
 
-  Widget _buildQuestionCard() {
-    final p = _post!;
-    return Container(
+  Widget _questionCard() {
+    final post = _post!;
+    return SizedBox(
       width: double.infinity,
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(color: Colors.pink.shade50, blurRadius: 8)
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Category + skin type
-          Row(
-            children: [
-              _chip(p.category, _pink),
-              if (p.skinType != null) ...[
-                const SizedBox(width: 6),
-                _chip(p.skinType!, Colors.purple),
+      child: CorrPanel(
+        padding: const EdgeInsets.all(22),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CommunityAuthor(name: post.author, date: post.createdAt),
+            const SizedBox(height: 18),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                CorrPill(label: communityLabel(post.category)),
+                if (post.skinType != null)
+                  CorrPill(label: '${communityLabel(post.skinType!)} skin'),
               ],
-            ],
-          ),
-          const SizedBox(height: 12),
-
-          // Question
-          Text(p.question,
-              style: const TextStyle(
-                  fontSize: 16, fontWeight: FontWeight.bold)),
-
-          if (p.details != null && p.details!.isNotEmpty) ...[
-            const SizedBox(height: 10),
-            Text(p.details!,
-                style: TextStyle(
-                    fontSize: 13, color: Colors.grey.shade700,
-                    height: 1.5)),
-          ],
-
-          const SizedBox(height: 14),
-          const Divider(),
-          const SizedBox(height: 10),
-
-          // Footer
-          Row(
-            children: [
-              const Icon(Icons.person_outline, size: 14, color: Colors.grey),
-              const SizedBox(width: 4),
-              Text(p.author,
-                  style: const TextStyle(
-                      fontSize: 12, color: Colors.grey)),
-              const SizedBox(width: 12),
-              Text(_timeAgo(p.createdAt),
-                  style: const TextStyle(
-                      fontSize: 12, color: Colors.grey)),
-              const Spacer(),
-              GestureDetector(
-                onTap: _likePost,
-                child: Row(
-                  children: [
-                    const Icon(Icons.favorite_border,
-                        size: 18, color: _pink),
-                    const SizedBox(width: 4),
-                    Text('${p.likes}',
-                        style: const TextStyle(
-                            color: _pink, fontWeight: FontWeight.bold)),
-                  ],
+            ),
+            const SizedBox(height: 16),
+            Text(
+              post.question,
+              style: GoogleFonts.playfairDisplay(fontSize: 25, height: 1.3),
+            ),
+            if (post.details?.trim().isNotEmpty == true) ...[
+              const SizedBox(height: 14),
+              Text(
+                post.details!,
+                style: const TextStyle(
+                  fontSize: 14,
+                  height: 1.7,
+                  color: AppTheme.textSecondary,
                 ),
               ),
             ],
-          ),
-        ],
+            const SizedBox(height: 16),
+            const Divider(),
+            OutlinedButton.icon(
+              onPressed: _reacting ? null : () => _react(),
+              icon: const Icon(Icons.favorite_border_rounded, size: 17),
+              label: Text('Like (${post.likes})'),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildAnswerCard(CommunityAnswer answer) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(color: Colors.pink.shade50, blurRadius: 6)
-        ],
+  Widget _answerCard(CommunityAnswer answer) => Padding(
+    padding: const EdgeInsets.only(bottom: 12),
+    child: SizedBox(
+      width: double.infinity,
+      child: CorrPanel(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CommunityAuthor(name: answer.author, date: answer.createdAt),
+            const SizedBox(height: 14),
+            Text(
+              answer.answer,
+              style: const TextStyle(fontSize: 14, height: 1.7),
+            ),
+            const SizedBox(height: 12),
+            TextButton.icon(
+              onPressed: _reacting ? null : () => _react(answerId: answer.id),
+              icon: const Icon(Icons.thumb_up_outlined, size: 16),
+              label: Text('${answer.isHelpful} helpful'),
+              style: TextButton.styleFrom(
+                foregroundColor: AppTheme.primaryDark,
+              ),
+            ),
+          ],
+        ),
       ),
+    ),
+  );
+
+  Widget _answerInput() => SizedBox(
+    width: double.infinity,
+    child: CorrPanel(
+      color: AppTheme.surfaceWarm,
+      padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(answer.answer,
-              style: const TextStyle(fontSize: 13, height: 1.5)),
-          const SizedBox(height: 10),
-          Row(
-            children: [
-              const Icon(Icons.person_outline, size: 13, color: Colors.grey),
-              const SizedBox(width: 4),
-              Text(answer.author,
-                  style: const TextStyle(
-                      fontSize: 11, color: Colors.grey)),
-              const SizedBox(width: 10),
-              Text(_timeAgo(answer.createdAt),
-                  style: const TextStyle(
-                      fontSize: 11, color: Colors.grey)),
-              const Spacer(),
-              GestureDetector(
-                onTap: () => _markHelpful(answer.id),
-                child: Row(
-                  children: [
-                    const Icon(Icons.thumb_up_outlined,
-                        size: 15, color: Colors.green),
-                    const SizedBox(width: 4),
-                    Text('${answer.isHelpful} helpful',
-                        style: const TextStyle(
-                            fontSize: 11, color: Colors.green)),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAnswerInput() {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-              color: Colors.black.withOpacity(0.06),
-              blurRadius: 10, offset: const Offset(0, -3))
-        ],
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Anonymous toggle
-          Row(
-            children: [
-              const Icon(Icons.visibility_off_outlined,
-                  size: 16, color: Colors.grey),
-              const SizedBox(width: 6),
-              const Text('Answer anonymously',
-                  style: TextStyle(fontSize: 13)),
-              const Spacer(),
-              Switch(
-                value: _isAnonymous,
-                onChanged: (v) => setState(() => _isAnonymous = v),
-                activeColor: _pink,
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              ),
-            ],
+          const Text(
+            'Share your experience',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 8),
-          Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: _answerController,
-                  maxLines: 2,
-                  decoration: InputDecoration(
-                    hintText: 'Share your advice...',
-                    hintStyle: TextStyle(
-                        color: Colors.grey.shade400, fontSize: 13),
-                    filled: true,
-                    fillColor: const Color(0xFFFFF0F5),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(color: _pink, width: 1.5),
-                    ),
-                  ),
-                ),
+          const Text(
+            'What helped you? A specific, kind reply goes a long way.',
+            style: TextStyle(
+              fontSize: 13,
+              height: 1.5,
+              color: AppTheme.textSecondary,
+            ),
+          ),
+          const SizedBox(height: 16),
+          TextField(
+            controller: _answer,
+            enabled: !_submitting,
+            minLines: 3,
+            maxLines: 7,
+            maxLength: 3000,
+            textCapitalization: TextCapitalization.sentences,
+            decoration: InputDecoration(
+              hintText: 'Share what worked for you...',
+              errorText: _answerError,
+              errorMaxLines: 4,
+              fillColor: AppTheme.surface,
+            ),
+          ),
+          CommunityPrivacyToggle(
+            value: _anonymous,
+            answering: true,
+            onChanged: _submitting
+                ? null
+                : (value) => setState(() => _anonymous = value),
+          ),
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton.icon(
+              style: FilledButton.styleFrom(
+                backgroundColor: AppTheme.primaryDark,
+                padding: const EdgeInsets.symmetric(vertical: 17),
               ),
-              const SizedBox(width: 10),
-              GestureDetector(
-                onTap: _isSubmitting ? null : _submitAnswer,
-                child: Container(
-                  width: 48, height: 48,
-                  decoration: const BoxDecoration(
-                      color: _pink, shape: BoxShape.circle),
-                  child: _isSubmitting
-                      ? const Padding(
-                          padding: EdgeInsets.all(12),
-                          child: CircularProgressIndicator(
-                              color: Colors.white, strokeWidth: 2))
-                      : const Icon(Icons.send_rounded,
-                          color: Colors.white, size: 22),
-                ),
-              ),
-            ],
+              onPressed: _submitting ? null : _submitAnswer,
+              icon: _submitting
+                  ? const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.white,
+                      ),
+                    )
+                  : const Icon(Icons.send_rounded, size: 17),
+              label: Text(_submitting ? 'Posting...' : 'Post reply'),
+            ),
           ),
         ],
       ),
-    );
-  }
-
-  Widget _emptyAnswers() {
-    return Container(
-      padding: const EdgeInsets.all(24),
-      child: Column(
-        children: [
-          const Icon(Icons.chat_bubble_outline, size: 40, color: Colors.grey),
-          const SizedBox(height: 10),
-          Text('No answers yet. Be the first to help!',
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.grey.shade500)),
-        ],
-      ),
-    );
-  }
-
-  Widget _chip(String label, Color color) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Text(label,
-          style: TextStyle(
-              fontSize: 11, color: color, fontWeight: FontWeight.w500)),
-    );
-  }
-
-  String _timeAgo(DateTime dt) {
-    final diff = DateTime.now().difference(dt);
-    if (diff.inMinutes < 60) return '${diff.inMinutes}m ago';
-    if (diff.inHours < 24)   return '${diff.inHours}h ago';
-    return '${diff.inDays}d ago';
-  }
+    ),
+  );
 }

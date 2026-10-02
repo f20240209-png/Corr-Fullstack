@@ -3,366 +3,311 @@ import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import '../services/api_service.dart';
 import '../models/community_post_model.dart';
+import '../theme/app_theme.dart';
+import '../widgets/community_widgets.dart';
 import 'ask_question_screen.dart';
 import 'question_detail_screen.dart';
 
 class CommunityScreen extends StatefulWidget {
   const CommunityScreen({super.key});
-
   @override
   State<CommunityScreen> createState() => _CommunityScreenState();
 }
 
 class _CommunityScreenState extends State<CommunityScreen>
     with SingleTickerProviderStateMixin {
-  late TabController _tabController;
-
-  // ── Constants ────────────────────────────────────────────────────────────
-  static const Color _pink      = Color(0xFFE91E8C);
-  static const Color _pinkLight = Color(0xFFFFF0F5);
-
-  static const List<String> _categories = [
-    'All', 'Acne', 'Oily', 'Dry', 'Sensitive',
-    'Anti-aging', 'Brightening', 'Hydration',
-  ];
-
-  // ── State ────────────────────────────────────────────────────────────────
-  List<CommunityPost> _allPosts  = [];
-  List<CommunityPost> _myPosts   = [];
-  bool   _loadingAll  = true;
-  bool   _loadingMine = true;
-  String _selectedCategory = 'All';
+  late final TabController _tabs;
+  List<CommunityPost> _posts = [], _mine = [];
+  bool _loading = true, _loadingMine = true, _loadingMore = false;
+  String? _error, _mineError, _moreError;
+  String _category = 'All';
+  int _request = 0, _mineRequest = 0, _page = 1, _totalPages = 1;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabs = TabController(length: 2, vsync: this);
     _fetchAll();
     _fetchMine();
   }
 
   @override
   void dispose() {
-    _tabController.dispose();
+    _tabs.dispose();
     super.dispose();
   }
 
-  // ── Fetch ────────────────────────────────────────────────────────────────
-  Future<void> _fetchAll({String? category}) async {
-    setState(() => _loadingAll = true);
+  String get _token =>
+      context.read<AuthProvider>().token ??
+      (throw const ApiException('Please sign in again.'));
+
+  Future<void> _fetchAll({bool more = false}) async {
+    if (!mounted || (more && (_loading || _loadingMore))) return;
+    final request = ++_request;
+    final page = more ? _page + 1 : 1;
+    final category = _category;
+    setState(() {
+      if (more) {
+        _loadingMore = true;
+      } else {
+        _loading = true;
+        _loadingMore = false;
+        _error = null;
+      }
+      _moreError = null;
+    });
     try {
-      final token = context.read<AuthProvider>().token!;
-      final data  = await ApiService.getCommunityPosts(
-        token,
-        category: category == 'All' || category == null ? null : category.toLowerCase(),
+      final data = await ApiService.getCommunityPosts(
+        _token,
+        page: page,
+        category: category == 'All' ? null : category.toLowerCase(),
       );
+      final posts = (data['posts'] as List)
+          .map(
+            (p) => CommunityPost.fromJson(Map<String, dynamic>.from(p as Map)),
+          )
+          .toList();
+      if (!mounted || request != _request) return;
       setState(() {
-        _allPosts = (data['posts'] as List)
-            .map((p) => CommunityPost.fromJson(p as Map<String, dynamic>))
-            .toList();
+        // Refreshes and filter changes can supersede a pagination request.
+        if (more) {
+          final ids = _posts.map((p) => p.id).toSet();
+          _posts = [..._posts, ...posts.where((p) => ids.add(p.id))];
+        } else {
+          _posts = posts;
+        }
+        _page = page;
+        _totalPages = (data['totalPages'] as num?)?.toInt() ?? 1;
       });
-    } catch (_) {} finally {
-      setState(() => _loadingAll = false);
+    } catch (e) {
+      if (mounted && request == _request) {
+        setState(() {
+          if (more) {
+            _moreError = e.toString();
+          } else {
+            _error = e.toString();
+          }
+        });
+      }
+    } finally {
+      if (mounted && request == _request) {
+        setState(() {
+          _loading = false;
+          _loadingMore = false;
+        });
+      }
     }
   }
 
   Future<void> _fetchMine() async {
-    setState(() => _loadingMine = true);
+    if (!mounted) return;
+    final request = ++_mineRequest;
+    setState(() {
+      _loadingMine = true;
+      _mineError = null;
+    });
     try {
-      final token = context.read<AuthProvider>().token!;
-      final data  = await ApiService.getMyPosts(token);
-      setState(() {
-        _myPosts = (data['posts'] as List)
-            .map((p) => CommunityPost.fromJson(p as Map<String, dynamic>))
-            .toList();
-      });
-    } catch (_) {} finally {
-      setState(() => _loadingMine = false);
+      final data = await ApiService.getMyPosts(_token);
+      final posts = (data['posts'] as List)
+          .map(
+            (p) => CommunityPost.fromJson(Map<String, dynamic>.from(p as Map)),
+          )
+          .toList();
+      if (mounted && request == _mineRequest) setState(() => _mine = posts);
+    } catch (e) {
+      if (mounted && request == _mineRequest)
+        setState(() => _mineError = e.toString());
+    } finally {
+      if (mounted && request == _mineRequest)
+        setState(() => _loadingMine = false);
     }
   }
 
-  // ── Build ────────────────────────────────────────────────────────────────
+  Future<void> _open(Widget screen) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute<void>(builder: (_) => screen),
+    );
+    if (mounted) await Future.wait([_fetchAll(), _fetchMine()]);
+  }
+
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: _pinkLight,
-      appBar: AppBar(
-        backgroundColor: _pink,
-        foregroundColor: Colors.white,
-        title: const Text('Community',
-            style: TextStyle(fontWeight: FontWeight.bold)),
-        bottom: TabBar(
-          controller: _tabController,
-          indicatorColor: Colors.white,
-          labelColor: Colors.white,
-          unselectedLabelColor: Colors.white70,
-          tabs: const [
-            Tab(text: 'Ask'),
-            Tab(text: 'Answer Others'),
-          ],
+  Widget build(BuildContext context) => Scaffold(
+    backgroundColor: AppTheme.background,
+    appBar: AppBar(
+      backgroundColor: AppTheme.background,
+      title: const Text('Community'),
+      actions: [
+        IconButton(
+          tooltip: 'Ask a question',
+          onPressed: () => _open(const AskQuestionScreen()),
+          icon: const Icon(Icons.add_comment_outlined),
         ),
-      ),
-      body: TabBarView(
-        controller: _tabController,
-        children: [
-          _buildAskTab(),
-          _buildAnswerTab(),
-        ],
-      ),
-    );
-  }
-
-  // ── Ask Tab ──────────────────────────────────────────────────────────────
-  Widget _buildAskTab() {
-    return RefreshIndicator(
-      color: _pink,
-      onRefresh: _fetchMine,
-      child: SingleChildScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Prompt card
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [Color(0xFFE91E8C), Color(0xFFFF6BB3)],
+        const SizedBox(width: 8),
+      ],
+    ),
+    body: SafeArea(
+      top: false,
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 960),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(18, 8, 18, 14),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: AppTheme.border.withValues(alpha: 0.45),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  padding: const EdgeInsets.all(5),
+                  child: TabBar(
+                    controller: _tabs,
+                    dividerColor: Colors.transparent,
+                    indicatorSize: TabBarIndicatorSize.tab,
+                    indicator: BoxDecoration(
+                      color: AppTheme.surface,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    labelColor: AppTheme.primaryDark,
+                    unselectedLabelColor: AppTheme.textSecondary,
+                    labelStyle: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                    ),
+                    tabs: const [
+                      Tab(text: 'Explore'),
+                      Tab(text: 'Your questions'),
+                    ],
+                  ),
                 ),
-                borderRadius: BorderRadius.circular(16),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text('💬 Got a skin question?',
-                      style: TextStyle(color: Colors.white, fontSize: 18,
-                          fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 6),
-                  const Text(
-                    'Post it anonymously and get real advice from the community.',
-                    style: TextStyle(color: Colors.white70, fontSize: 13),
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) => const AskQuestionScreen()),
-                    ).then((_) => _fetchMine()),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: _pink,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                    ),
-                    child: const Text('+ Ask a Question',
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                  ),
-                ],
+              Expanded(
+                child: TabBarView(
+                  controller: _tabs,
+                  children: [_feed(mine: false), _feed(mine: true)],
+                ),
               ),
-            ),
-            const SizedBox(height: 24),
-
-            const Text('Your Questions',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 12),
-
-            if (_loadingMine)
-              const Center(child: CircularProgressIndicator(color: _pink))
-            else if (_myPosts.isEmpty)
-              _emptyState("You haven't asked anything yet.",
-                  "Your questions will appear here.")
-            else
-              ..._myPosts.map((p) => _postCard(p, showAnswerBtn: false)),
-          ],
+            ],
+          ),
         ),
       ),
-    );
-  }
+    ),
+  );
 
-  // ── Answer Tab ───────────────────────────────────────────────────────────
-  Widget _buildAnswerTab() {
-    return Column(
-      children: [
-        // Category filter chips
-        Container(
-          color: Colors.white,
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: _categories.map((cat) {
-                final selected = cat == _selectedCategory;
-                return Padding(
-                  padding: const EdgeInsets.only(right: 8),
-                  child: ChoiceChip(
-                    label: Text(cat),
-                    selected: selected,
-                    onSelected: (_) {
-                      setState(() => _selectedCategory = cat);
-                      _fetchAll(category: cat);
-                    },
-                    selectedColor: _pink,
-                    labelStyle: TextStyle(
-                      color: selected ? Colors.white : Colors.black87,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    backgroundColor: Colors.grey.shade100,
+  Widget _feed({required bool mine}) {
+    final loading = mine ? _loadingMine : _loading;
+    final error = mine ? _mineError : _error;
+    final posts = mine ? _mine : _posts;
+    return RefreshIndicator(
+      onRefresh: mine ? _fetchMine : () => _fetchAll(),
+      child: ListView(
+        key: PageStorageKey(mine ? 'my-community-posts' : 'community-feed'),
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.fromLTRB(18, 0, 18, 32),
+        children: [
+          CommunityHero(onAsk: () => _open(const AskQuestionScreen())),
+          const SizedBox(height: 22),
+          if (!mine) ...[
+            const Text(
+              'Find your conversation',
+              style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 8,
+              runSpacing: 7,
+              children: ['All', ...communityCategories].map((category) {
+                final selected = category == _category;
+                return ChoiceChip(
+                  label: Text(category),
+                  selected: selected,
+                  showCheckmark: false,
+                  selectedColor: AppTheme.primaryDark,
+                  backgroundColor: AppTheme.surface,
+                  side: BorderSide(
+                    color: selected ? AppTheme.primaryDark : AppTheme.border,
                   ),
+                  labelStyle: TextStyle(
+                    color: selected ? Colors.white : AppTheme.textSecondary,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  onSelected: (_) {
+                    if (selected) return;
+                    setState(() => _category = category);
+                    _fetchAll();
+                  },
                 );
               }).toList(),
             ),
+            const SizedBox(height: 22),
+          ],
+          Text(
+            mine ? 'Your questions' : 'Latest conversations',
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
           ),
-        ),
-
-        // Posts list
-        Expanded(
-          child: RefreshIndicator(
-            color: _pink,
-            onRefresh: () => _fetchAll(category: _selectedCategory),
-            child: _loadingAll
-                ? const Center(child: CircularProgressIndicator(color: _pink))
-                : _allPosts.isEmpty
-                    ? _emptyState(
-                        'No questions yet.', 'Be the first to ask!')
-                    : ListView.builder(
-                        padding: const EdgeInsets.all(16),
-                        itemCount: _allPosts.length,
-                        itemBuilder: (_, i) =>
-                            _postCard(_allPosts[i], showAnswerBtn: true),
-                      ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  // ── Post card ────────────────────────────────────────────────────────────
-  Widget _postCard(CommunityPost post, {required bool showAnswerBtn}) {
-    return GestureDetector(
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (_) => QuestionDetailScreen(postId: post.id)),
-      ).then((_) {
-        _fetchAll(category: _selectedCategory);
-        _fetchMine();
-      }),
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(14),
-          boxShadow: [BoxShadow(color: Colors.pink.shade50, blurRadius: 8)],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Category + skin type chips
-            Row(
-              children: [
-                _chip(post.category, _pink),
-                if (post.skinType != null) ...[
-                  const SizedBox(width: 6),
-                  _chip(post.skinType!, Colors.purple),
-                ],
-                const Spacer(),
-                Text(_timeAgo(post.createdAt),
-                    style: TextStyle(
-                        fontSize: 11, color: Colors.grey.shade500)),
-              ],
+          const SizedBox(height: 14),
+          if (loading)
+            const Padding(
+              padding: EdgeInsets.all(48),
+              child: Center(child: CircularProgressIndicator()),
+            )
+          else if (error != null)
+            CommunityStateCard(
+              icon: Icons.cloud_off_outlined,
+              title: 'Could not load questions',
+              message: error,
+              onAction: mine ? _fetchMine : () => _fetchAll(),
+            )
+          else if (posts.isEmpty)
+            CommunityStateCard(
+              icon: Icons.chat_bubble_outline_rounded,
+              title: mine
+                  ? 'Start your first conversation'
+                  : 'Room for a new conversation',
+              message: mine
+                  ? 'Questions you post will live here, along with replies from the community.'
+                  : 'No questions in this topic yet. Share what is on your mind.',
+              actionLabel: 'Ask a question',
+              onAction: () => _open(const AskQuestionScreen()),
+            )
+          else ...[
+            ...posts.map(
+              (post) => CommunityPostCard(
+                post: post,
+                onTap: () => _open(QuestionDetailScreen(postId: post.id)),
+              ),
             ),
-            const SizedBox(height: 10),
-
-            // Question
-            Text(post.question,
-                style: const TextStyle(
-                    fontSize: 14, fontWeight: FontWeight.w600),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis),
-            const SizedBox(height: 10),
-
-            // Footer
-            Row(
-              children: [
-                const Icon(Icons.person_outline, size: 14, color: Colors.grey),
-                const SizedBox(width: 4),
-                Text(post.author,
-                    style: const TextStyle(
-                        fontSize: 12, color: Colors.grey)),
-                const SizedBox(width: 16),
-                const Icon(Icons.chat_bubble_outline,
-                    size: 14, color: Colors.grey),
-                const SizedBox(width: 4),
-                Text('${post.answerCount} answers',
-                    style: const TextStyle(
-                        fontSize: 12, color: Colors.grey)),
-                const Spacer(),
-                if (showAnswerBtn)
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 5),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFFFF0F5),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.pink.shade200),
-                    ),
-                    child: const Text('Answer',
-                        style: TextStyle(
-                            color: _pink,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600)),
+            if (!mine && _moreError != null)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Text(
+                  _moreError!,
+                  style: const TextStyle(color: AppTheme.error),
+                ),
+              ),
+            if (!mine && _page < _totalPages)
+              Center(
+                child: OutlinedButton.icon(
+                  onPressed: _loadingMore ? null : () => _fetchAll(more: true),
+                  icon: _loadingMore
+                      ? const SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Icon(Icons.expand_more_rounded, size: 18),
+                  label: Text(
+                    _moreError != null
+                        ? 'Retry more questions'
+                        : 'More conversations',
                   ),
-              ],
-            ),
+                ),
+              ),
           ],
-        ),
+        ],
       ),
     );
-  }
-
-  Widget _chip(String label, Color color) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Text(label,
-          style: TextStyle(
-              fontSize: 11, color: color, fontWeight: FontWeight.w500)),
-    );
-  }
-
-  Widget _emptyState(String title, String sub) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(40),
-        child: Column(
-          children: [
-            const Icon(Icons.chat_bubble_outline,
-                size: 48, color: Colors.grey),
-            const SizedBox(height: 12),
-            Text(title,
-                style: const TextStyle(
-                    fontWeight: FontWeight.bold, fontSize: 15)),
-            const SizedBox(height: 4),
-            Text(sub,
-                style: TextStyle(
-                    color: Colors.grey.shade500, fontSize: 13)),
-          ],
-        ),
-      ),
-    );
-  }
-
-  String _timeAgo(DateTime dt) {
-    final diff = DateTime.now().difference(dt);
-    if (diff.inMinutes < 60) return '${diff.inMinutes}m ago';
-    if (diff.inHours < 24)   return '${diff.inHours}h ago';
-    return '${diff.inDays}d ago';
   }
 }

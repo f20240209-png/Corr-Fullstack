@@ -13,7 +13,18 @@ const photo = async colour => ({ buffer: await png(colour) });
 const response = () => ({ statusCode: 200, status(n) { this.statusCode = n; return this; }, json(body) { this.body = body; return this; }, set() { return this; }, type() { return this; }, send(bytes) { this.bytes = bytes; return this; } });
 function database() {
   let rows = [], images = new Map(), next = 1;
-  const matches = (row, where) => Object.entries(where).every(([key, value]) => value && typeof value === 'object' ? row[key] < value.lt : row[key] === value);
+  const matches = (row, where) => Object.entries(where).every(([key, value]) => {
+    if (key === 'AND') return value.every(item => matches(row, item));
+    if (key === 'OR') return value.some(item => matches(row, item));
+    if (value && typeof value === 'object') return Object.entries(value).every(([op, term]) => {
+      if (op === 'lt') return row[key] !== null && row[key] < term;
+      if (op === 'gt') return row[key] !== null && row[key] > term;
+      if (op === 'gte') return row[key] !== null && row[key] >= term;
+      if (op === 'contains') return String(row[key]).toLowerCase().includes(term.toLowerCase());
+      return false;
+    });
+    return row[key] === value;
+  });
   const unique = (data, except) => {
     if (rows.some(row => row.id !== except && row.userId === data.userId && (row.productKey === data.productKey || row.imageHash === data.imageHash))) throw Object.assign(new Error('duplicate'), { code: 'P2002' });
   };
@@ -123,4 +134,12 @@ test('image write failure rolls back the review/version update', async () => {
   db.productDiscoveryImage.update = async () => { throw new Error('Storage unavailable'); };
   const res = response(); await controller.updateDiscovery({ userId: 1, params: { id: '1' }, body: { ...base, review: 'Should not be saved.', version: '1' }, file: await photo('green') }, res);
   assert.equal(res.statusCode, 503); assert.equal(db.rows[0].version, 1); assert.equal(db.rows[0].review, base.review);
+});
+test('product types validate and legacy edits preserve the existing category', async () => {
+  assert.throws(() => validateDiscovery({ ...base, productType: 'unknown' }), { status: 400 });
+  assert.equal(validateDiscovery(base).productType, 'other');
+  const db = database(), c = load(db);
+  assert.equal((await add(c, { productType: 'serum' })).body.discovery.productType, 'serum');
+  const res = response(); await c.updateDiscovery({ userId: 1, params: { id: '1' }, body: { ...base, version: '1' } }, res);
+  assert.equal(res.statusCode, 200); assert.equal(res.body.discovery.productType, 'serum');
 });

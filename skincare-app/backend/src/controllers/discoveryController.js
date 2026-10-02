@@ -1,7 +1,8 @@
 const prisma = require('../services/prisma');
 const { validateDiscovery } = require('../services/discoveryData');
+const { collectionQuery, afterCard } = require('../services/collectionQuery');
 const { prepareDiscoveryImage } = require('../services/discoveryImage');
-const fields = { id: true, productName: true, brand: true, review: true, rating: true, discoveredOn: true, version: true, createdAt: true, updatedAt: true };
+const fields = { id: true, productName: true, brand: true, productType: true, review: true, rating: true, discoveredOn: true, version: true, createdAt: true, updatedAt: true };
 const problem = (status, message) => Object.assign(new Error(message), { status });
 const idFrom = value => { const id = Number(value); if (!Number.isSafeInteger(id) || id <= 0) throw problem(400, 'Invalid discovery.'); return id; };
 function report(res, error) {
@@ -16,12 +17,20 @@ async function listDiscoveries(req, res) {
     const limit = req.query.limit === undefined ? 24 : Number(req.query.limit);
     if (!Number.isInteger(limit) || limit < 1 || limit > 50) throw problem(400, 'Invalid collection page size.');
     const before = req.query.before === undefined ? undefined : idFrom(req.query.before);
+    const { where, orderBy, sort } = collectionQuery(req.query, req.userId);
     const result = await prisma.$transaction(async tx => {
       const count = await tx.productDiscovery.count({ where: { userId: req.userId } });
-      const rows = await tx.productDiscovery.findMany({ where: { userId: req.userId, ...(before ? { id: { lt: before } } : {}) }, select: fields, orderBy: { id: 'desc' }, take: limit + 1 });
+      const filteredCount = await tx.productDiscovery.count({ where });
+      let seek;
+      if (before) {
+        const anchor = ['name', 'rating'].includes(sort)
+          ? await tx.productDiscovery.findFirst({ where: { id: before, userId: req.userId }, select: { rating: true, productName: true } }) : null;
+        seek = afterCard(sort, before, anchor);
+      }
+      const rows = await tx.productDiscovery.findMany({ where: seek ? { ...where, AND: [seek] } : where, select: fields, orderBy, take: limit + 1 });
       const more = rows.length > limit;
       const items = rows.slice(0, limit);
-      return { discoveries: items.map(decorate), count, score: count, nextCursor: more ? items[items.length - 1].id : null };
+      return { discoveries: items.map(decorate), count, filteredCount, score: count, nextCursor: more ? items[items.length - 1].id : null };
     });
     res.json(result);
   } catch (error) { report(res, error); }
@@ -37,9 +46,9 @@ async function createDiscovery(req, res) {
 async function updateDiscovery(req, res) {
   try {
     const id = idFrom(req.params.id);
-    const owned = await prisma.productDiscovery.findFirst({ where: { id, userId: req.userId }, select: { id: true } });
+    const owned = await prisma.productDiscovery.findFirst({ where: { id, userId: req.userId }, select: { id: true, productType: true } });
     if (!owned) throw problem(404, 'Discovery not found.');
-    const data = validateDiscovery(req.body), version = idFrom(req.body.version);
+    const data = validateDiscovery({ ...req.body, productType: req.body.productType ?? owned.productType }), version = idFrom(req.body.version);
     const image = req.file ? await prepareDiscoveryImage(req.file) : null;
     const item = await prisma.$transaction(async tx => {
       const updated = await tx.productDiscovery.updateMany({ where: { id, userId: req.userId, version }, data: { ...data, ...(image ? { imageHash: image.imageHash } : {}), version: { increment: 1 } } });

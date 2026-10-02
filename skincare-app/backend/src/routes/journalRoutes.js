@@ -1,0 +1,12 @@
+const router = require('express').Router();
+const { protect } = require('../middleware/authMiddleware');
+const upload = require('../middleware/journalUpload');
+const controller = require('../controllers/journalController');
+router.use(protect);
+router.use((req, res, next) => { res.set('Cache-Control', 'private, no-store'); next(); });
+router.get('/', controller.listJournal);
+router.get('/:date/photo', controller.getJournalPhoto);
+router.get('/:date', controller.getJournal);
+router.put('/:date', upload, controller.saveJournal);
+router.delete('/:date', controller.deleteJournal);
+module.exports = router;
