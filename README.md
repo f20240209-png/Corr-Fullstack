@@ -87,6 +87,41 @@ This integration needs no Spotify API key or Spotify account connection inside C
 - Skin details, goals, budgets, routine notes/photos, collections and journal entries stay out of friend responses.
 - Either participant can remove a friendship from the friend profile screen. User search is debounced to reduce unnecessary requests.
 
+## Security and privacy
+
+Corr includes protections for personal data, authentication, uploads and API usage.
+
+### Implemented protections
+
+- **Authenticated access:** Private API routes require a valid Corr JWT. Journal entries, discoveries, routine logs and their photos are scoped to the authenticated owner.
+- **Private friend profiles:** Friends see public identity information only. Skin details, budgets, goals, collections and journal content are excluded. Either user can remove a friendship.
+- **Request limits:** Sign-in, registration, AI generation, uploads, searches and social actions are throttled. Cached routine reads do not consume the AI generation allowance.
+- **Safer uploads:** New photos are validated, size-limited, decoded and re-encoded with metadata removed. Photo saves authenticate before expensive processing, and concurrent saves are limited. Older stored routine photos remain unchanged.
+- **Private responses:** API responses use `Cache-Control: private, no-store`. The public `/uploads` endpoint has been removed.
+- **Safer errors:** Unexpected errors return a generic message and request ID. Application error logs exclude raw database queries, provider responses, credentials and private content.
+- **Security headers:** The backend uses Helmet and exact-origin CORS. Netlify headers include a limited enforced Content Security Policy and a broader report-only policy.
+- **Spotify loading choice:** Saved journal songs create an embedded player only after the user selects **Load Spotify player**.
+
+### Third-party services
+
+AI routine generation sends skincare profile context to Groq; journal text and photos are not included in routine requests. Loading a Spotify player connects the browser to Spotify.
+
+### Current limitations
+
+Browser authentication still stores a seven-day JWT in SharedPreferences/localStorage. Logout does not revoke an already copied token.
+
+Journal content is private from other users but is not end-to-end encrypted. Server/database operators can access stored content. Backup encryption and retention depend on hosting configuration.
+
+Rate limits currently use per-process memory and reset on restart. Multiple API instances require a shared rate-limit store.
+
+Planned improvements include revocable sessions, safer browser authentication, sharing preferences, blocking, data export and account deletion.
+
+### Deployment and verification
+
+This update requires **Node.js 22 or newer**, a backend redeployment and a fresh Flutter web build. No database migration is required.
+
+Backend tests cover authentication, ownership checks, private media access, request limits and safe error handling. The local production dependency audit reported zero vulnerabilities on **6 October 2026**; development dependency findings remain under review.  
+
 ## Architecture
 
 Corr uses a Flutter client and a modular Express backend. Controllers handle requests, services contain application logic, and Prisma connects the backend to MySQL.
