@@ -1,3 +1,4 @@
+const { serverError } = require('../services/errors');
 const prisma = require('../services/prisma');
 
 const validProfile = (body) => {
@@ -53,7 +54,7 @@ const createProfile = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    return serverError(req, res, error);
   }
 };
 
@@ -80,8 +81,7 @@ const getProfile = async (req, res) => {
           : [],
     });
   } catch (error) {
-    console.error('getProfile error:', error);
-    res.status(500).json({ message: 'Server error', error: error.message });
+    return serverError(req, res, error);
   }
 };
 
@@ -127,7 +127,7 @@ const updateProfile = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    return serverError(req, res, error);
   }
 };
 
@@ -153,7 +153,7 @@ const searchProducts = async (req, res) => {
 
     res.json({ products });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    return serverError(req, res, error);
   }
 };
 

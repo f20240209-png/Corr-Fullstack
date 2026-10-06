@@ -1,6 +1,7 @@
-const admin = require('firebase-admin');
+const { cert, getApps, initializeApp } = require('firebase-admin/app');
+const { getAuth } = require('firebase-admin/auth');
 
-if (!admin.apps.length) {
+if (!getApps().length) {
   let privateKey = process.env.FIREBASE_PRIVATE_KEY;
   
   if (privateKey) {
@@ -11,8 +12,8 @@ if (!admin.apps.length) {
   }
 
 
-  admin.initializeApp({
-    credential: admin.credential.cert({
+  initializeApp({
+    credential: cert({
       projectId: process.env.FIREBASE_PROJECT_ID,
       clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
       privateKey: privateKey,
@@ -20,4 +21,5 @@ if (!admin.apps.length) {
   });
 }
 
-module.exports = admin;
+// Keep the controller interface while using the supported modular SDK.
+module.exports = { auth: () => getAuth() };

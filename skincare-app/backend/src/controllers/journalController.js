@@ -1,3 +1,4 @@
+const { logServerError } = require('../services/errors');
 const prisma = require('../services/prisma');
 const { prepareDiscoveryImage } = require('../services/discoveryImage');
 const { problem, journalDate, journalMonth, journalVersion, journalText } = require('../services/journalData');
@@ -9,10 +10,10 @@ const decorate = entry => {
   return { ...data, spotifyTrackId, spotifyUrl: spotifyTrackId ? `https://open.spotify.com/track/${spotifyTrackId}` : null,
     hasPhoto: Boolean(image), photoPath: image ? `/journal/${entry.entryDate}/photo?v=${entry.version}` : null };
 };
-function report(res, error) {
+function report(req, res, error) {
   if (error.code === 'P2002') return res.status(409).json({ message: 'A page was just saved for this date. Reload the saved page before editing.' });
-  if (error.status) return res.status(error.status).json({ message: error.message });
-  console.error('Journal request failed:', error.code || error.name);
+  if ([400, 404, 409, 413].includes(error.status)) return res.status(error.status).json({ message: error.message });
+  logServerError(req, error);
   return res.status(503).json({ message: 'Your journal is temporarily unavailable. Please try again.' });
 }
 async function listJournal(req, res) {
@@ -21,7 +22,7 @@ async function listJournal(req, res) {
     const entries = await prisma.journalEntry.findMany({ where: { userId: req.userId, entryDate },
       select: { entryDate: true, title: true, version: true, image: { select: { entryId: true } } }, orderBy: { entryDate: 'asc' } });
     res.json({ entries: entries.map(({ image, ...entry }) => ({ ...entry, hasPhoto: Boolean(image) })) });
-  } catch (error) { report(res, error); }
+  } catch (error) { report(req, res, error); }
 }
 async function getJournal(req, res) {
   try {
@@ -29,7 +30,7 @@ async function getJournal(req, res) {
     const entry = await prisma.journalEntry.findFirst({ where: { userId: req.userId, entryDate }, select: fields });
     res.set('Cache-Control', 'private, no-store');
     res.json({ entry: decorate(entry) });
-  } catch (error) { report(res, error); }
+  } catch (error) { report(req, res, error); }
 }
 async function saveJournal(req, res) {
   try {
@@ -55,7 +56,7 @@ async function saveJournal(req, res) {
       return tx.journalEntry.findFirst({ where: { id: owned.id, userId: req.userId }, select: fields });
     });
     res.json({ entry: decorate(entry) });
-  } catch (error) { report(res, error); }
+  } catch (error) { report(req, res, error); }
 }
 async function deleteJournal(req, res) {
   try {
@@ -69,7 +70,7 @@ async function deleteJournal(req, res) {
       await tx.journalEntryImage.deleteMany({ where: { entryId: owned.id } });
     });
     res.json({ deleted: true });
-  } catch (error) { report(res, error); }
+  } catch (error) { report(req, res, error); }
 }
 async function getJournalPhoto(req, res) {
   try {
@@ -78,6 +79,6 @@ async function getJournalPhoto(req, res) {
     if (!entry?.image) throw problem(404, 'Journal photo not found.');
     res.set('Cache-Control', 'private, no-store');
     res.type('image/webp').send(Buffer.from(req.query.size === 'thumbnail' ? entry.image.thumbnail : entry.image.bytes));
-  } catch (error) { report(res, error); }
+  } catch (error) { report(req, res, error); }
 }
 module.exports = { listJournal, getJournal, saveJournal, deleteJournal, getJournalPhoto };

@@ -1,3 +1,4 @@
+const { logServerError } = require('../services/errors');
 const prisma = require('../services/prisma');
 const { validateDiscovery } = require('../services/discoveryData');
 const { collectionQuery, afterCard } = require('../services/collectionQuery');
@@ -5,10 +6,10 @@ const { prepareDiscoveryImage } = require('../services/discoveryImage');
 const fields = { id: true, productName: true, brand: true, productType: true, review: true, rating: true, discoveredOn: true, version: true, createdAt: true, updatedAt: true };
 const problem = (status, message) => Object.assign(new Error(message), { status });
 const idFrom = value => { const id = Number(value); if (!Number.isSafeInteger(id) || id <= 0) throw problem(400, 'Invalid discovery.'); return id; };
-function report(res, error) {
+function report(req, res, error) {
   if (error.code === 'P2002') return res.status(409).json({ message: 'This product or photo is already in your collection. Edit its existing card instead.' });
-  if (error.status) return res.status(error.status).json({ message: error.message });
-  console.error('Discovery request failed:', error.code || error.name);
+  if ([400, 404, 409, 413].includes(error.status)) return res.status(error.status).json({ message: error.message });
+  logServerError(req, error);
   return res.status(503).json({ message: 'Your collection is temporarily unavailable. Please try again.' });
 }
 const decorate = item => ({ ...item, imagePath: `/discoveries/${item.id}/photo?v=${item.version}`, thumbnailPath: `/discoveries/${item.id}/photo?size=thumbnail&v=${item.version}` });
@@ -33,7 +34,7 @@ async function listDiscoveries(req, res) {
       return { discoveries: items.map(decorate), count, filteredCount, score: count, nextCursor: more ? items[items.length - 1].id : null };
     });
     res.json(result);
-  } catch (error) { report(res, error); }
+  } catch (error) { report(req, res, error); }
 }
 async function createDiscovery(req, res) {
   try {
@@ -41,7 +42,7 @@ async function createDiscovery(req, res) {
     const { bytes, thumbnail, imageHash } = await prepareDiscoveryImage(req.file);
     const item = await prisma.productDiscovery.create({ data: { ...data, imageHash, userId: req.userId, image: { create: { bytes, thumbnail } } }, select: fields });
     res.status(201).json({ discovery: decorate(item) });
-  } catch (error) { report(res, error); }
+  } catch (error) { report(req, res, error); }
 }
 async function updateDiscovery(req, res) {
   try {
@@ -57,7 +58,7 @@ async function updateDiscovery(req, res) {
       return tx.productDiscovery.findFirst({ where: { id, userId: req.userId }, select: fields });
     });
     res.json({ discovery: decorate(item) });
-  } catch (error) { report(res, error); }
+  } catch (error) { report(req, res, error); }
 }
 async function deleteDiscovery(req, res) {
   try {
@@ -72,7 +73,7 @@ async function deleteDiscovery(req, res) {
       await tx.productDiscoveryImage.deleteMany({ where: { discoveryId: id } });
     });
     res.json({ deleted: true });
-  } catch (error) { report(res, error); }
+  } catch (error) { report(req, res, error); }
 }
 async function getDiscoveryPhoto(req, res) {
   try {
@@ -81,6 +82,6 @@ async function getDiscoveryPhoto(req, res) {
     if (!item?.image) throw problem(404, 'Photo not found.');
     res.set('Cache-Control', 'private, no-store');
     res.type('image/webp').send(Buffer.from(req.query.size === 'thumbnail' ? item.image.thumbnail : item.image.bytes));
-  } catch (error) { report(res, error); }
+  } catch (error) { report(req, res, error); }
 }
 module.exports = { listDiscoveries, createDiscovery, updateDiscovery, deleteDiscovery, getDiscoveryPhoto };

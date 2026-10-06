@@ -57,7 +57,11 @@ void main() {
         find.byKey(const ValueKey('journal-song-link')),
         'https://open.spotify.com/track/4uLU6hMCjMI75M1A2tKUQC?si=share',
       );
-      await tester.tap(find.text('Preview song'));
+      await tester.tap(find.text('Use this song'));
+      await tester.pumpAndSettle();
+      expect(find.byType(JournalSpotifyPlayer), findsNothing);
+      await tester.ensureVisible(find.text('Load Spotify player'));
+      await tester.tap(find.text('Load Spotify player'));
       await tester.pumpAndSettle();
       expect(find.byType(JournalSpotifyPlayer), findsOneWidget);
       await tester.ensureVisible(find.text('Save this page'));

@@ -1,4 +1,7 @@
+const { serverError } = require('../services/errors');
 const prisma = require('../services/prisma');
+const publicIdentity = { id: true, name: true, username: true };
+const positiveId = value => typeof value === 'string' && /^[1-9]\d{0,9}$/.test(value) && Number(value) <= 2147483647 ? Number(value) : null;
 
 // GET /api/users/search?username=xxx
 const searchUsers = async (req, res) => {
@@ -6,18 +9,16 @@ const searchUsers = async (req, res) => {
     const { username } = req.query;
     const myId = req.userId;
 
-    if (!username || username.trim().length < 2) {
+    if (username === undefined || (typeof username === 'string' && username.trim().length < 2)) {
       return res.json({ users: [] });
+    }
+    if (typeof username !== 'string' || username.trim().length > 30) {
+      return res.status(400).json({ message: 'Search with a username of 2–30 characters.' });
     }
 
     const users = await prisma.user.findMany({
       where: { username: { contains: username.trim() }, id: { not: myId } },
-      select: {
-        id:      true,
-        name:    true,
-        username: true,
-        profile: { select: { skinType: true } },
-      },
+      select: publicIdentity,
       take: 10,
     });
 
@@ -45,7 +46,6 @@ const searchUsers = async (req, res) => {
           id:             u.id,
           name:           u.name,
           username:       u.username,
-          skinType:       u.profile?.skinType ?? null,
           relationStatus,
           requestId:      request?.id ?? null,
         };
@@ -54,7 +54,7 @@ const searchUsers = async (req, res) => {
 
     res.json({ users: results });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    return serverError(req, res, error);
   }
 };
 
@@ -62,13 +62,14 @@ const searchUsers = async (req, res) => {
 const sendRequest = async (req, res) => {
   try {
     const senderId   = req.userId;
-    const receiverId = parseInt(req.params.userId);
+    const receiverId = positiveId(req.params.userId);
+    if (!receiverId) return res.status(400).json({ message: 'Invalid user ID.' });
 
     if (senderId === receiverId) {
       return res.status(400).json({ message: 'You cannot add yourself.' });
     }
 
-    const receiver = await prisma.user.findUnique({ where: { id: receiverId } });
+    const receiver = await prisma.user.findUnique({ where: { id: receiverId }, select: { id: true } });
     if (!receiver) return res.status(404).json({ message: 'User not found.' });
 
     const existing = await prisma.friendRequest.findFirst({
@@ -100,7 +101,7 @@ const sendRequest = async (req, res) => {
 
     res.status(201).json({ message: 'Friend request sent!', request });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    return serverError(req, res, error);
   }
 };
 
@@ -108,21 +109,22 @@ const sendRequest = async (req, res) => {
 const acceptRequest = async (req, res) => {
   try {
     const myId      = req.userId;
-    const requestId = parseInt(req.params.requestId);
+    const requestId = positiveId(req.params.requestId);
+    if (!requestId) return res.status(400).json({ message: 'Invalid request ID.' });
 
-    const request = await prisma.friendRequest.findUnique({ where: { id: requestId } });
+    const request = await prisma.friendRequest.findFirst({ where: { id: requestId, receiverId: myId } });
     if (!request) return res.status(404).json({ message: 'Request not found.' });
-    if (request.receiverId !== myId) return res.status(403).json({ message: 'Not authorised.' });
     if (request.status !== 'PENDING') return res.status(400).json({ message: 'Request already handled.' });
 
-    const updated = await prisma.friendRequest.update({
-      where: { id: requestId },
+    const updated = await prisma.friendRequest.updateMany({
+      where: { id: requestId, receiverId: myId, status: 'PENDING' },
       data:  { status: 'ACCEPTED' },
     });
+    if (!updated.count) return res.status(409).json({ message: 'This request changed. Refresh your friends before trying again.' });
 
-    res.json({ message: 'Friend request accepted!', request: updated });
+    res.json({ message: 'Friend request accepted!', request: { id: requestId, status: 'ACCEPTED' } });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    return serverError(req, res, error);
   }
 };
 
@@ -130,20 +132,23 @@ const acceptRequest = async (req, res) => {
 const rejectRequest = async (req, res) => {
   try {
     const myId      = req.userId;
-    const requestId = parseInt(req.params.requestId);
+    const requestId = positiveId(req.params.requestId);
+    if (!requestId) return res.status(400).json({ message: 'Invalid request ID.' });
 
-    const request = await prisma.friendRequest.findUnique({ where: { id: requestId } });
+    const request = await prisma.friendRequest.findFirst({ where: { id: requestId, receiverId: myId } });
     if (!request) return res.status(404).json({ message: 'Request not found.' });
-    if (request.receiverId !== myId) return res.status(403).json({ message: 'Not authorised.' });
 
-    await prisma.friendRequest.update({
-      where: { id: requestId },
+    if (request.status !== 'PENDING') return res.status(400).json({ message: 'Request already handled.' });
+
+    const updated = await prisma.friendRequest.updateMany({
+      where: { id: requestId, receiverId: myId, status: 'PENDING' },
       data:  { status: 'REJECTED' },
     });
+    if (!updated.count) return res.status(409).json({ message: 'This request changed. Refresh your friends before trying again.' });
 
     res.json({ message: 'Friend request rejected.' });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    return serverError(req, res, error);
   }
 };
 
@@ -151,16 +156,18 @@ const rejectRequest = async (req, res) => {
 const cancelRequest = async (req, res) => {
   try {
     const myId      = req.userId;
-    const requestId = parseInt(req.params.requestId);
+    const requestId = positiveId(req.params.requestId);
+    if (!requestId) return res.status(400).json({ message: 'Invalid request ID.' });
 
-    const request = await prisma.friendRequest.findUnique({ where: { id: requestId } });
+    const request = await prisma.friendRequest.findFirst({ where: { id: requestId, senderId: myId } });
     if (!request) return res.status(404).json({ message: 'Request not found.' });
-    if (request.senderId !== myId) return res.status(403).json({ message: 'Not authorised.' });
+    if (request.status !== 'PENDING') return res.status(400).json({ message: 'Only a pending request can be cancelled.' });
 
-    await prisma.friendRequest.delete({ where: { id: requestId } });
+    const removed = await prisma.friendRequest.deleteMany({ where: { id: requestId, senderId: myId, status: 'PENDING' } });
+    if (!removed.count) return res.status(409).json({ message: 'This request changed. Refresh your friends before trying again.' });
     res.json({ message: 'Request cancelled.' });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    return serverError(req, res, error);
   }
 };
 
@@ -175,8 +182,8 @@ const getFriends = async (req, res) => {
         OR: [{ senderId: myId }, { receiverId: myId }],
       },
       include: {
-        sender:   { select: { id: true, name: true, username: true, profile: { select: { skinType: true } } } },
-        receiver: { select: { id: true, name: true, username: true, profile: { select: { skinType: true } } } },
+        sender:   { select: publicIdentity },
+        receiver: { select: publicIdentity },
       },
     });
 
@@ -186,14 +193,13 @@ const getFriends = async (req, res) => {
         id:        friend.id,
         name:      friend.name,
         username:  friend.username,
-        skinType:  friend.profile?.skinType ?? null,
         requestId: r.id,
       };
     });
 
     res.json({ friends });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    return serverError(req, res, error);
   }
 };
 
@@ -206,7 +212,7 @@ const getPendingRequests = async (req, res) => {
       where:   { receiverId: myId, status: 'PENDING' },
       orderBy: { createdAt: 'desc' },
       include: {
-        sender: { select: { id: true, name: true, username: true, profile: { select: { skinType: true } } } },
+        sender: { select: publicIdentity },
       },
     });
 
@@ -216,12 +222,11 @@ const getPendingRequests = async (req, res) => {
         senderId: r.senderId,
         name:     r.sender.name,
         username: r.sender.username,
-        skinType: r.sender.profile?.skinType ?? null,
         sentAt:   r.createdAt,
       })),
     });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    return serverError(req, res, error);
   }
 };
 
@@ -229,7 +234,8 @@ const getPendingRequests = async (req, res) => {
 const getFriendProfile = async (req, res) => {
   try {
     const myId     = req.userId;
-    const friendId = parseInt(req.params.userId);
+    const friendId = positiveId(req.params.userId);
+    if (!friendId) return res.status(400).json({ message: 'Invalid user ID.' });
 
     const friendship = await prisma.friendRequest.findFirst({
       where: {
@@ -247,17 +253,7 @@ const getFriendProfile = async (req, res) => {
 
     const user = await prisma.user.findUnique({
       where: { id: friendId },
-      select: {
-        id:       true,
-        name:     true,
-        username: true,
-        profile:  { select: { skinType: true, skinGoals: true, budget: true } },
-        skincareLogs: {
-          orderBy: { createdAt: 'desc' },
-          take: 10,
-          select: { id: true, timeOfDay: true, productsUsed: true, notes: true, photo: true, createdAt: true },
-        },
-      },
+      select: publicIdentity,
     });
 
     if (!user) return res.status(404).json({ message: 'User not found.' });
@@ -266,16 +262,32 @@ const getFriendProfile = async (req, res) => {
       id:       user.id,
       name:     user.name,
       username: user.username,
-      profile:  user.profile
-          ? { ...user.profile, skinGoals: JSON.parse(user.profile.skinGoals) }
-          : null,
-      skincareLogs: user.skincareLogs.map((l) => ({
-        ...l,
-        productsUsed: JSON.parse(l.productsUsed),
-      })),
+      // Empty legacy fields keep older clients readable, without fetching any
+      // private profile, log, discovery or journal information from the DB.
+      profile: null,
+      skincareLogs: [],
+      visibility: 'private',
     });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    return serverError(req, res, error);
+  }
+};
+
+// DELETE /api/friends/:userId — either participant may end a friendship.
+const removeFriend = async (req, res) => {
+  try {
+    const friendId = positiveId(req.params.userId);
+    if (!friendId || friendId === req.userId) return res.status(400).json({ message: 'Invalid friend ID.' });
+    await prisma.friendRequest.deleteMany({ where: {
+      status: 'ACCEPTED',
+      OR: [
+        { senderId: req.userId, receiverId: friendId },
+        { senderId: friendId, receiverId: req.userId },
+      ],
+    } });
+    return res.json({ message: 'Friend removed.' });
+  } catch (error) {
+    return serverError(req, res, error);
   }
 };
 
@@ -288,4 +300,5 @@ module.exports = {
   getFriends,
   getPendingRequests,
   getFriendProfile,
+  removeFriend,
 };

@@ -11,6 +11,7 @@ function load(prisma, generate) {
     console: { error() {} }, require(name) {
       if (name === '../services/prisma') return prisma;
       if (name === '../services/aiService') return { generateSkincareRecommendation: generate };
+      if (name === '../middleware/rateLimits') return { allowGeneration: async () => true };
       return realRequire(name);
     } }, { filename });
   return module.exports;

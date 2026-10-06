@@ -70,8 +70,9 @@ Attach one Spotify song to a journal page using **paste link + embedded player**
 
 1. Select **Add a song** below the Polaroid.
 2. Paste a full Spotify song link.
-3. Select **Preview song** to display Spotify's player.
-4. Save the journal page to keep the song with that date.
+3. Select **Use this song** to attach the link.
+4. Choose **Load Spotify player** when you want to connect to Spotify. The player is not created just by opening a journal page.
+5. Save the journal page to keep the song with that date.
 
 Songs can be changed or removed. A song-only journal entry is supported. The web app includes an **Open in Spotify** link; native builds provide a song-link copy fallback.
 
@@ -82,8 +83,9 @@ This integration needs no Spotify API key or Spotify account connection inside C
 - A community feed with topic filters, an Explore view and a separate view for your questions.
 - Ask questions, write answers, like posts and mark answers as helpful.
 - Search for users by username and send, accept, reject or cancel friend requests.
-- View an accepted friend's basic profile and recent skincare logs.
-- Personal discovery collections and journal entries are excluded from friend-profile responses.
+- Friend search, requests, lists and profiles expose only names and usernames, plus connection status.
+- Skin details, goals, budgets, routine notes/photos, collections and journal entries stay out of friend responses.
+- Either participant can remove a friendship from the friend profile screen. User search is debounced to reduce unnecessary requests.
 
 ## Architecture
 
@@ -141,7 +143,7 @@ flowchart TD
 
 ### Requirements
 
-- Node.js **20.9 or later**, npm and Git.
+- Node.js **22 or later**, npm and Git. The backend `.node-version` selects Node 22 for Render; a `NODE_VERSION` environment override must also be 22 or newer.
 - A Flutter SDK that includes **Dart 3.11 or later**, matching `pubspec.yaml`.
 - A MySQL database, a Firebase project and Firebase Admin credentials.
 - A Groq API key for routine generation. The collection, journal and Spotify embeds do not require that key.
@@ -168,7 +170,7 @@ PORT=3000
 CORS_ORIGINS="https://your-frontend-domain.example"
 ```
 
-Keep `.env` and service-account credentials out of Git. `JWT_SECRET` must stay consistent across backend restarts. `GROQ_MODEL` is optional; the value shown is the current code default. Localhost development origins are already allowed by the backend.
+Keep `.env` and service-account credentials out of Git. `JWT_SECRET` must stay consistent across backend restarts. `GROQ_MODEL` is optional; the value shown is the current code default. Localhost origins are allowed in development. Production accepts the deployed Netlify origin and exact HTTPS origins from `CORS_ORIGINS`; do not include localhost, wildcards or URL paths in a production allowlist.
 
 ### 2. Prepare the database
 
@@ -298,9 +300,27 @@ The deployed base URL is `https://glowguide-fullstack.onrender.com/api`. Protect
 | Product collection | `/discoveries`, `/discoveries/:id`, `/discoveries/:id/photo` |
 | Private journal | `/journal?month=YYYY-MM`, `/journal/:date`, `/journal/:date/photo` |
 | Community | `/community`, `/community/my-posts`, post and answer actions |
-| Friends | `/users/search`, `/friends`, `/friends/requests`, request actions and friend profiles |
+| Friends | `/users/search`, `/friends`, `/friends/requests`, request actions, private identity profiles and `DELETE /friends/:userId` |
 
 Discovery creation and journal saving use multipart requests. Discovery photos are required; journal photos are optional. Journal saves include the loaded page version and an optional `spotifyUrl`. Omitting that field preserves an existing song for older clients; sending an empty value removes it.
+
+## Security and privacy
+
+The first security update keeps personal data out of social profiles and adds API safeguards:
+
+- All API responses use `Cache-Control: private, no-store`. Journal, discovery and routine-log data are scoped to the authenticated owner.
+- Photo writes authenticate first and share an account limit. At most two photo saves run at once on an API instance, with one per account. Routine photos, like journal and discovery photos, are decoded with Sharp, size-limited, re-encoded as WebP and stripped of metadata. Older stored routine photos are retained as-is; new and replacement photos receive these protections.
+- There is no public `/uploads` filesystem endpoint. Existing uploaded files are not deleted; any external feature using an old public upload URL must move to an owner-authorised media endpoint.
+- Sign-in, registration, user search, social writes and actual AI generation are throttled. Cached routine reads do not consume the AI generation allowance. A throttled request returns JSON with HTTP 429 and `Retry-After`.
+- Unexpected errors return a safe message and a server-generated request ID. Logs contain limited error classifications rather than queries, provider responses, passwords, tokens or journal text.
+- Helmet protects API responses. Flutter's `web/_headers` provides actual Netlify headers, including a limited enforced CSP and a broader **report-only** CSP for browser validation. Google popups, camera uploads and Spotify embeds remain supported.
+- A saved soundtrack connects to Spotify only after the user chooses to load its player or open its link. Routine generation sends profile context to Groq, not journal text or photos.
+
+The limits use per-process memory and reset on restart. Multiple server instances need a shared store before scaling. Render defaults to one trusted proxy hop; verify the ingress topology and set `TRUST_PROXY_HOPS` to the actual trusted hop count (0–3). Never enable unlimited proxy trust.
+
+Browser authentication still uses the existing seven-day JWT in SharedPreferences/localStorage. Logout is still local and does not revoke an already copied token. Revocable sessions, safer browser authentication, granular sharing preferences, blocking, export and account deletion are the next security phase. The journal is private from other app users, but is **not end-to-end encrypted**; server/database operators can access stored content. Database and backup encryption and retention depend on the hosting configuration.
+
+No database schema change is required for this first update. Redeploy the backend and rebuild/redeploy Flutter web to activate the protections and user-facing changes.
 
 ## Scope and current limitations
 

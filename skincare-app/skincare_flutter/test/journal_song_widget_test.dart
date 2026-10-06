@@ -30,7 +30,7 @@ void main() {
       await tester.pumpAndSettle();
       final input = find.byKey(const ValueKey('journal-song-link'));
       await tester.enterText(input, 'https://example.com/song');
-      await tester.tap(find.text('Preview song'));
+      await tester.tap(find.text('Use this song'));
       await tester.pumpAndSettle();
       expect(chosen, isNull);
       expect(
@@ -45,7 +45,7 @@ void main() {
         input,
         'https://open.spotify.com/track/$id?si=share',
       );
-      await tester.tap(find.text('Preview song'));
+      await tester.tap(find.text('Use this song'));
       await tester.pumpAndSettle();
       expect(chosen, id);
       expect(find.byType(JournalSongDialog), findsNothing);
@@ -80,6 +80,9 @@ void main() {
           ),
         ),
       );
+      expect(find.byType(JournalSpotifyPlayer), findsNothing);
+      await tester.tap(find.text('Load Spotify player'));
+      await tester.pumpAndSettle();
       expect(find.byType(JournalSpotifyPlayer), findsOneWidget);
       expect(tester.takeException(), isNull);
       await tester.tap(find.text('Change song'));

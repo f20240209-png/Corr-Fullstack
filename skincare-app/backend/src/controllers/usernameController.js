@@ -1,3 +1,4 @@
+const { serverError } = require('../services/errors');
 const prisma = require('../services/prisma');
 
 // GET /api/profile/check-username?username=xxx
@@ -28,7 +29,7 @@ const checkUsername = async (req, res) => {
       message:   existing && existing.id !== req.userId ? 'Username already taken.' : 'Username available!',
     });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    return serverError(req, res, error);
   }
 };
 
@@ -72,7 +73,7 @@ const setUsername = async (req, res) => {
 
     res.json({ message: 'Username set successfully!', username: updated.username });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    return serverError(req, res, error);
   }
 };
 

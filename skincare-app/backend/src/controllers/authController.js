@@ -1,11 +1,12 @@
+const { serverError, logServerError } = require('../services/errors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const prisma = require('../services/prisma');
 const admin = require('../services/firebaseAdmin');
 
 
-const firebaseVerificationError = (res, error) => {
-  console.error('Firebase verification failed:', error.code || 'unknown');
+const firebaseVerificationError = (req, res, error) => {
+  logServerError(req, error);
   if (['auth/invalid-credential', 'app/invalid-credential', 'auth/internal-error'].includes(error.code)) {
     return res.status(503).json({
       message: 'Google/phone sign-in is temporarily unavailable. Please contact the app owner.',
@@ -52,7 +53,7 @@ const register = async (req, res) => {
       user: { id: user.id, name: user.name, email: user.email }
     });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    return serverError(req, res, error);
   }
 };
 
@@ -87,7 +88,7 @@ const login = async (req, res) => {
       user: { id: user.id, name: user.name, email: user.email }
     });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    return serverError(req, res, error);
   }
 };
 
@@ -105,7 +106,7 @@ const googleLogin = async (req, res) => {
       decodedToken = await admin.auth().verifyIdToken(idToken);
 
     } catch (verifyError) {
-      return firebaseVerificationError(res, verifyError);
+      return firebaseVerificationError(req, res, verifyError);
     }
 
     if (decodedToken.firebase?.sign_in_provider !== 'google.com' || !decodedToken.email_verified || !decodedToken.email) {
@@ -149,8 +150,7 @@ const googleLogin = async (req, res) => {
     });
 
   } catch (error) {
-    console.log('Google login server error:', error.message);
-    res.status(500).json({ message: 'Server error', error: error.message });
+    return serverError(req, res, error);
   }
 };
 
@@ -167,7 +167,7 @@ const firebaseLogin = async (req, res) => {
     try {
       decodedToken = await admin.auth().verifyIdToken(idToken);
     } catch (verifyError) {
-      return firebaseVerificationError(res, verifyError);
+      return firebaseVerificationError(req, res, verifyError);
     }
 
     if (!decodedToken.email || !decodedToken.email_verified) {
@@ -204,8 +204,7 @@ const firebaseLogin = async (req, res) => {
     });
 
   } catch (error) {
-    console.log('Firebase login server error:', error.message);
-    res.status(500).json({ message: 'Server error', error: error.message });
+    return serverError(req, res, error);
   }
 };
 
@@ -222,7 +221,7 @@ const phoneLogin = async (req, res) => {
     try {
       decodedToken = await admin.auth().verifyIdToken(idToken);
     } catch (verifyError) {
-      return firebaseVerificationError(res, verifyError);
+      return firebaseVerificationError(req, res, verifyError);
     }
 
     const phoneNumber = decodedToken.phone_number;
@@ -275,8 +274,7 @@ const phoneLogin = async (req, res) => {
     });
 
   } catch (error) {
-    console.log('Phone login server error:', error.message);
-    res.status(500).json({ message: 'Server error', error: error.message });
+    return serverError(req, res, error);
   }
 };
 

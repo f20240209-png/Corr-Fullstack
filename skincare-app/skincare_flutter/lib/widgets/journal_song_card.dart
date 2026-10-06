@@ -5,7 +5,7 @@ import '../models/journal_song.dart';
 import '../theme/app_theme.dart';
 import 'journal_spotify_player.dart';
 
-class JournalSongCard extends StatelessWidget {
+class JournalSongCard extends StatefulWidget {
   final String? trackId;
   final bool enabled;
   final VoidCallback onChoose, onRemove;
@@ -18,7 +18,24 @@ class JournalSongCard extends StatelessWidget {
   });
 
   @override
+  State<JournalSongCard> createState() => _JournalSongCardState();
+}
+
+class _JournalSongCardState extends State<JournalSongCard> {
+  bool _playerLoaded = false;
+
+  @override
+  void didUpdateWidget(covariant JournalSongCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.trackId != widget.trackId) _playerLoaded = false;
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final trackId = widget.trackId;
+    final enabled = widget.enabled;
+    final onChoose = widget.onChoose;
+    final onRemove = widget.onRemove;
     final hasSong = isSpotifyTrackId(trackId);
     return Container(
       width: double.infinity,
@@ -71,7 +88,10 @@ class JournalSongCard extends StatelessWidget {
           ),
           const SizedBox(height: 14),
           if (hasSong) ...[
-            JournalSpotifyPlayer(key: ValueKey(trackId), trackId: trackId!),
+            if (_playerLoaded)
+              JournalSpotifyPlayer(key: ValueKey(trackId), trackId: trackId!)
+            else
+              _playerCover(),
             const SizedBox(height: 10),
             Wrap(
               spacing: 6,
@@ -120,6 +140,41 @@ class JournalSongCard extends StatelessWidget {
       ),
     );
   }
+
+  Widget _playerCover() => Container(
+    width: double.infinity,
+    padding: const EdgeInsets.all(14),
+    decoration: BoxDecoration(
+      color: AppTheme.surface,
+      borderRadius: BorderRadius.circular(12),
+      border: Border.all(color: AppTheme.border),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Your song is saved',
+          style: TextStyle(fontWeight: FontWeight.w600),
+        ),
+        const SizedBox(height: 6),
+        const Text(
+          'Loading the player connects to Spotify and may use its cookies. Your journal text and photos stay in Corr.',
+          style: TextStyle(
+            fontSize: 12,
+            height: 1.5,
+            color: AppTheme.textSecondary,
+          ),
+        ),
+        const SizedBox(height: 10),
+        OutlinedButton.icon(
+          key: const ValueKey('load-spotify-player'),
+          onPressed: () => setState(() => _playerLoaded = true),
+          icon: const Icon(Icons.play_circle_outline_rounded, size: 18),
+          label: const Text('Load Spotify player'),
+        ),
+      ],
+    ),
+  );
 }
 
 class JournalSongDialog extends StatefulWidget {
@@ -148,7 +203,7 @@ class _JournalSongDialogState extends State<JournalSongDialog> {
     super.dispose();
   }
 
-  void _preview() {
+  void _choose() {
     final id = spotifyTrackIdFromLink(_link.text);
     if (id == null) {
       setState(
@@ -184,7 +239,7 @@ class _JournalSongDialogState extends State<JournalSongDialog> {
               autocorrect: false,
               enableSuggestions: false,
               maxLength: 2048,
-              onSubmitted: (_) => _preview(),
+              onSubmitted: (_) => _choose(),
               onChanged: (_) {
                 if (_error != null) setState(() => _error = null);
               },
@@ -198,7 +253,7 @@ class _JournalSongDialogState extends State<JournalSongDialog> {
             ),
             const SizedBox(height: 12),
             const Text(
-              'Preview it, then save your journal page to keep the song.',
+              'Add the link, then save your journal page. The player loads when you choose.',
               style: TextStyle(
                 color: AppTheme.textSecondary,
                 fontSize: 12,
@@ -214,9 +269,9 @@ class _JournalSongDialogState extends State<JournalSongDialog> {
           child: const Text('Cancel'),
         ),
         FilledButton.icon(
-          onPressed: _preview,
+          onPressed: _choose,
           icon: const Icon(Icons.music_note_rounded, size: 17),
-          label: const Text('Preview song'),
+          label: const Text('Use this song'),
         ),
       ],
     ),

@@ -43,12 +43,22 @@ class ApiService {
     }
     if (response.statusCode < 200 || response.statusCode >= 300) {
       if (!(allowNotFound && response.statusCode == 404)) {
-        throw ApiException(
-          data['message'] is String
-              ? data['message'] as String
-              : 'The request failed. Please try again.',
-          response.statusCode,
-        );
+        var message = data['message'] is String
+            ? data['message'] as String
+            : 'The request failed. Please try again.';
+        final retrySeconds = data['retryAfterSeconds'];
+        if (response.statusCode == 429 &&
+            retrySeconds is num &&
+            retrySeconds.isFinite &&
+            retrySeconds > 0 &&
+            retrySeconds <= 86400) {
+          final minutes = (retrySeconds / 60).ceil();
+          final wait = retrySeconds < 60
+              ? '${retrySeconds.ceil()} seconds'
+              : '$minutes ${minutes == 1 ? 'minute' : 'minutes'}';
+          message = '$message Try again in about $wait.';
+        }
+        throw ApiException(message, response.statusCode);
       }
     }
     return {...data, 'statusCode': response.statusCode};
@@ -305,6 +315,9 @@ class ApiService {
     String token,
     int userId,
   ) => _request('GET', '/friends/$userId/profile', token: token);
+  static Future<void> removeFriend(String token, int userId) async {
+    await _request('DELETE', '/friends/$userId', token: token);
+  }
 
   static Future<Map<String, dynamic>> getDiscoveries(
     String token, {

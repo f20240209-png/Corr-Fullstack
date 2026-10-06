@@ -1,6 +1,8 @@
+const { logServerError } = require('../services/errors');
 const prisma = require('../services/prisma');
 const { generateSkincareRecommendation } = require('../services/aiService');
 const { serializeRecommendation, deserializeRecommendation } = require('../services/recommendationData');
+const { allowGeneration } = require('../middleware/rateLimits');
 // Select only the original columns so partially migrated deployments remain readable.
 const selection = { id: true, profileId: true, routine: true, products: true, createdAt: true, updatedAt: true };
 const inFlight = new Map();
@@ -36,10 +38,11 @@ const handle = refresh => async (req, res) => {
         } catch { /* Regenerate a malformed legacy record without losing the profile. */ }
       }
     }
+    if (!await allowGeneration(req, res)) return;
     const saved = await generateAndSave(profile);
     res.json({ message: 'Routine saved successfully.', recommendation: deserializeRecommendation(saved) });
   } catch (error) {
-    console.error('Routine request failed:', error.code || error.status || error.name);
+    logServerError(req, error);
     const status = [409, 429, 502, 503].includes(error.status) ? error.status : error.status ? 503 : 500;
     const message = [409, 502, 503].includes(status) ? (error.publicMessage || 'The AI service is temporarily unavailable or misconfigured. Please try again or contact the app owner.')
       : status === 429 ? 'The AI service is busy. Please wait a moment and try again.'

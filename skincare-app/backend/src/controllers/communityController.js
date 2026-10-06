@@ -1,3 +1,4 @@
+const { serverError } = require('../services/errors');
 const prisma = require('../services/prisma');
 
 // ─── GET all posts (paginated) ─────────────────────────────────────────────
@@ -38,7 +39,7 @@ const getPosts = async (req, res) => {
 
     res.json({ posts: formatted, total, page, totalPages: Math.ceil(total / limit) });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    return serverError(req, res, error);
   }
 };
 
@@ -76,7 +77,7 @@ const getPostById = async (req, res) => {
       })),
     });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    return serverError(req, res, error);
   }
 };
 
@@ -107,7 +108,7 @@ const getMyPosts = async (req, res) => {
       })),
     });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    return serverError(req, res, error);
   }
 };
 
@@ -116,14 +117,17 @@ const createPost = async (req, res) => {
   try {
     const { question, details, category, skinType, isAnonymous } = req.body;
 
-    if (!question || question.trim().length < 10) {
+    if (typeof question !== 'string' || question.trim().length < 10 || question.length > 500) {
       return res.status(400).json({
-        message: 'Question must be at least 10 characters.',
+        message: 'Question must be 10–500 characters.',
       });
     }
 
-    if (!category) {
-      return res.status(400).json({ message: 'Category is required.' });
+    if (typeof category !== 'string' || !category.trim() || category.length > 50 ||
+        (details != null && (typeof details !== 'string' || details.length > 5000)) ||
+        (skinType != null && (typeof skinType !== 'string' || skinType.length > 30)) ||
+        (isAnonymous != null && typeof isAnonymous !== 'boolean')) {
+      return res.status(400).json({ message: 'Provide a valid category and details of at most 5,000 characters.' });
     }
 
     const post = await prisma.communityPost.create({
@@ -139,7 +143,7 @@ const createPost = async (req, res) => {
 
     res.status(201).json({ message: 'Question posted!', post });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    return serverError(req, res, error);
   }
 };
 
@@ -149,9 +153,10 @@ const answerPost = async (req, res) => {
     const { answer, isAnonymous } = req.body;
     const postId = parseInt(req.params.id);
 
-    if (!answer || answer.trim().length < 5) {
+    if (typeof answer !== 'string' || answer.trim().length < 5 || answer.length > 5000 ||
+        (isAnonymous != null && typeof isAnonymous !== 'boolean')) {
       return res.status(400).json({
-        message: 'Answer must be at least 5 characters.',
+        message: 'Answer must be 5–5,000 characters with a valid anonymity choice.',
       });
     }
 
@@ -174,7 +179,7 @@ const answerPost = async (req, res) => {
 
     res.status(201).json({ message: 'Answer posted!', answer: newAnswer });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    return serverError(req, res, error);
   }
 };
 
@@ -187,7 +192,7 @@ const likePost = async (req, res) => {
     });
     res.json({ likes: post.likes });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    return serverError(req, res, error);
   }
 };
 
@@ -200,7 +205,7 @@ const markHelpful = async (req, res) => {
     });
     res.json({ isHelpful: answer.isHelpful });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    return serverError(req, res, error);
   }
 };
 
